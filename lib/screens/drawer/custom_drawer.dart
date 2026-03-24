@@ -1,35 +1,31 @@
 import 'package:flutter/material.dart';
 
-
 class CustomDrawer extends StatelessWidget {
-  final Function(int) onTap;
+  final VoidCallback onMenuPressed;
 
-  const CustomDrawer({super.key, required this.onTap});
-
-  Widget item(IconData icon, String title, int index) {
-    return ListTile(
-      leading: Icon(icon),
-      title: Text(title),
-      onTap: () => onTap(index),
-    );
-  }
+  const CustomDrawer({
+    super.key,
+    required this.onMenuPressed,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Drawer(
-      child: Column(
-        children: [
-          const SizedBox(height: 40),
-          const Text("Lottery Network"),
-
-          item(Icons.home, "Home", 0),
-          item(Icons.videogame_asset, "Games", 1),
-          item(Icons.emoji_events, "Results", 2),
-          item(Icons.layers, "Levels", 3),
-          item(Icons.account_balance_wallet, "Wallet", 4),
-          item(Icons.help, "How to Play", 5),
-        ],
-      ),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        const Text(
+          "Lottery Network",
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.w700,
+            color: Color(0xFFFFC857),
+          ),
+        ),
+        IconButton(
+          icon: const Icon(Icons.menu, color: Colors.white),
+          onPressed: onMenuPressed,
+        )
+      ],
     );
   }
 }

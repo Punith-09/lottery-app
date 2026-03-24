@@ -1,11 +1,29 @@
 import 'package:flutter/material.dart';
-import '../home/home_screen.dart';
-import '../games/games_screen.dart';
-import '../results/results_screen.dart';
-import '../levels/levels_screen.dart';
-import '../wallet/wallet_screen.dart';
-import '../how_to_play/how_to_play_screen.dart';
-import '../drawer/custom_drawer.dart';
+import 'package:lottery_app/screens/drawer/custom_drawer.dart';
+import 'package:lottery_app/screens/games/games_screen.dart';
+import 'package:lottery_app/screens/home/home_screen.dart';
+import 'package:lottery_app/screens/how_to_play/how_to_play_screen.dart';
+import 'package:lottery_app/screens/levels/levels_screen.dart';
+import 'package:lottery_app/screens/results/results_screen.dart';
+import 'package:lottery_app/screens/wallet/wallet_screen.dart';
+
+void main() {
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Lottery Network',
+      debugShowCheckedModeBanner: false,
+      // theme: AppTheme.darkTheme,
+      home: const MainScreen(),
+    );
+  }
+}
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -15,6 +33,14 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
+
+  bool isMenuOpen = false;
+
+  void toggleMenu() {
+    setState(() {
+      isMenuOpen = !isMenuOpen;
+    });
+  }
 
   int selectedIndex = 0;
 
@@ -40,17 +66,18 @@ class _MainScreenState extends State<MainScreen> {
     setState(() {
       selectedIndex = index;
     });
-    Navigator.pop(context); // close drawer
+    Navigator.pop(context);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(titles[selectedIndex]),
-      ),
+      // appBar: AppBar(
+      //   title: Text(titles[selectedIndex]),
+      // ),
+      //
+      // drawer: CustomDrawer( onMenuPressed: toggleMenu,),
 
-      drawer: CustomDrawer(onTap: onItemTap),
 
       body: screens[selectedIndex],
     );
