@@ -33,8 +33,8 @@ class _HomeScreenState extends State<HomeScreen> {
         center: Alignment.topCenter,
         radius: 1.2,
         colors: [
-          Color(0x42000000),
-          Color(0x42000000),
+          Color(0xFF0A0F0D),
+          Color(0xFF0A0F0D),
         ],
       ),
     ),
@@ -47,9 +47,9 @@ class _HomeScreenState extends State<HomeScreen> {
     children: [
     const SizedBox(height: 20),
 
-    CustomDrawer(
-    onMenuPressed: toggleMenu,
-    ),
+    CustomDrawer(onMenuPressed: toggleMenu,),
+
+      Text("This is home", style: TextStyle(fontSize: 40),)
     ],
     ),
     ),

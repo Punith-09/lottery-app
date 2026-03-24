@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../core/constants/app_constants.dart';
+
 class AppMenu extends StatelessWidget {
 
   final VoidCallback onClose;
@@ -20,7 +22,7 @@ class AppMenu extends StatelessWidget {
         height: halfHeight,
         width: double.infinity,
         decoration: const BoxDecoration(
-          color: Color(0xFF061412),
+          color: Color(0xFF0A0F0D),
           borderRadius: BorderRadius.only(
             bottomLeft: Radius.circular(30),
             bottomRight: Radius.circular(30),
@@ -37,16 +39,17 @@ class AppMenu extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     const Text(
-                      "Lottery Network",
+                      "🎰 Lottery Network",
                       style: TextStyle(
-                        fontSize: 18,
+                        fontSize: 24,
                         fontWeight: FontWeight.bold,
-                        color: Color(0xFFFFC857),
+                        // color: Color(0xFFFFC857),
+                          color: AppColors.accent
                       ),
                     ),
 
                     IconButton(
-                      icon: const Icon(Icons.close,color: Colors.white),
+                      icon: const Icon(Icons.close,color: Colors.white, size: 30,),
                       onPressed: onClose,
                     )
                   ],
@@ -61,16 +64,16 @@ class AppMenu extends StatelessWidget {
                   Navigator.pushNamed(context, '/all-games');
                 }),
                 menuItem(Icons.bar_chart_outlined, "Results",() {
-                  Navigator.pushNamed(context, '/');
+                  Navigator.pushNamed(context, '/results');
                 }),
                 menuItem(Icons.leaderboard_outlined, "Levels",() {
-                  Navigator.pushNamed(context, '/');
+                  Navigator.pushNamed(context, '/levels');
                 }),
                 menuItem(Icons.account_balance_wallet_outlined, "Wallet",() {
-                  Navigator.pushNamed(context, '/');
+                  Navigator.pushNamed(context, '/wallet');
                 }),
                 menuItem(Icons.help_outline, "How to Play",() {
-                  Navigator.pushNamed(context, '/');
+                  Navigator.pushNamed(context, '/how-to-play');
                 }),
 
                 const Spacer(),

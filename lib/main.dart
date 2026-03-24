@@ -7,6 +7,8 @@ import 'package:lottery_app/screens/levels/levels_screen.dart';
 import 'package:lottery_app/screens/results/results_screen.dart';
 import 'package:lottery_app/screens/wallet/wallet_screen.dart';
 
+import 'core/theme/app_theme.dart';
+
 void main() {
   runApp(const MyApp());
 }
@@ -19,67 +21,17 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Lottery Network',
       debugShowCheckedModeBanner: false,
-      // theme: AppTheme.darkTheme,
-      home: const MainScreen(),
-    );
-  }
-}
+      theme: AppTheme.darkTheme,
 
-class MainScreen extends StatefulWidget {
-  const MainScreen({super.key});
-
-  @override
-  State<MainScreen> createState() => _MainScreenState();
-}
-
-class _MainScreenState extends State<MainScreen> {
-
-  bool isMenuOpen = false;
-
-  void toggleMenu() {
-    setState(() {
-      isMenuOpen = !isMenuOpen;
-    });
-  }
-
-  int selectedIndex = 0;
-
-  final List<Widget> screens = [
-    const HomeScreen(),
-    const GamesScreen(),
-    const ResultsScreen(),
-    const LevelsScreen(),
-    const WalletScreen(),
-    const HowToPlayScreen(),
-  ];
-
-  final List<String> titles = [
-    "Home",
-    "Games",
-    "Results",
-    "Levels",
-    "Wallet",
-    "How to Play",
-  ];
-
-  void onItemTap(int index) {
-    setState(() {
-      selectedIndex = index;
-    });
-    Navigator.pop(context);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      // appBar: AppBar(
-      //   title: Text(titles[selectedIndex]),
-      // ),
-      //
-      // drawer: CustomDrawer( onMenuPressed: toggleMenu,),
-
-
-      body: screens[selectedIndex],
+        initialRoute: '/',
+        routes: {
+          '/': (context) => const HomeScreen(),
+          '/all-games': (context) => const GamesScreen(),
+          '/results': (context) => const ResultsScreen(),
+          '/levels': (context) => const LevelsScreen(),
+          '/wallet': (context) => const WalletScreen(),
+          '/how-to-play': (context) => const HowToPlayScreen(),
+        }
     );
   }
 }

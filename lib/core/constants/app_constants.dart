@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class AppColors {
   // 🌑 Backgrounds
-  static const Color scaffoldBg = Color(0xFF0A1411);
+  static const Color scaffoldBg = Color(0xFF0A0F0D);
   static const Color surface = Color(0xFF052D2B);
   static const Color card = Color(0xFF073B39);
 
