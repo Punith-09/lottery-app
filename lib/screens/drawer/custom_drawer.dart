@@ -35,7 +35,7 @@ class CustomDrawer extends StatelessWidget {
 
       ],
     ),
-        Divider(color: Colors.white54),
+        Divider(color: Colors.white24),
         SizedBox(height: 20),
       ],
     );
