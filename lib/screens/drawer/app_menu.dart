@@ -19,7 +19,7 @@ class AppMenu extends StatelessWidget {
     return Align(
       alignment: Alignment.topCenter,
       child: Container(
-        height: halfHeight,
+        height: 570,
         width: double.infinity,
         decoration: const BoxDecoration(
           color: Color(0xFF0A0F0D),

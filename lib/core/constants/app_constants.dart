@@ -56,5 +56,5 @@ class AppSizes {
 class AppAssets {
   // Add your images here later
   static const String logo = "assets/logo.png";
-  static const String banner = "assets/banner.jpg";
+  static const String banner = "assets/banner-1.jpg";
 }
