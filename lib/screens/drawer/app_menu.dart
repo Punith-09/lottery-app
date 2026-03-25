@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 
 import '../../core/constants/app_constants.dart';
 
@@ -14,7 +15,7 @@ class AppMenu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    final halfHeight = MediaQuery.of(context).size.height * 0.67;
+    final halfHeight = MediaQuery.of(context).size.height * 0.79;
 
     return Align(
       alignment: Alignment.topCenter,
@@ -76,18 +77,57 @@ class AppMenu extends StatelessWidget {
                   Navigator.pushNamed(context, '/how-to-play');
                 }),
 
-                const Spacer(),
+                const SizedBox(height: 10),
 
                 const Divider(color: Colors.white10),
 
                 const SizedBox(height: 10),
 
-                Row(
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
 
-                    Expanded(
-                      child: ElevatedButton(
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(15),
+                      decoration: BoxDecoration(
+                        color: Color(0xFF161D1A),
+                        borderRadius: BorderRadius.circular(12)
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SvgPicture.asset(
+                            "assets/wallet.svg",
+                            width: 16,
+                            height: 16,
+                            color:Color(0xFF05DA70),
+                          ),
+                          const SizedBox(width: 8,),
+                          Text(
+                            "Wallet:",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold
+                            ),
+                          ),
+                          Text(
+                            "\$1,480",
+                            style: TextStyle(
+                              color: Colors.white,
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold
+                            ),
+                          ),
+                        ],
+                      )
+                    ),
+                    // Expanded(
+                      ElevatedButton(
+
                         style: ElevatedButton.styleFrom(
+
                           backgroundColor: Colors.transparent,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
@@ -104,12 +144,12 @@ class AppMenu extends StatelessWidget {
                           ),
                         ),
                       ),
-                    ),
+                    // ),
 
-                    const SizedBox(width: 10),
+                    const SizedBox(height: 10),
 
-                    Expanded(
-                      child: ElevatedButton(
+                    // Expanded(
+                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xFF00C896),
                           shape: RoundedRectangleBorder(
@@ -127,7 +167,7 @@ class AppMenu extends StatelessWidget {
                           ),
                         ),
                       ),
-                    ),
+                    // ),
                   ],
                 )
               ],
