@@ -8,31 +8,6 @@ class LevelsOverview extends StatelessWidget{
   Widget build(BuildContext context) {
     return Column(
       children: [
-        const Center(
-          child: Text(
-            "Levels Overview",
-            style: TextStyle(
-                fontSize: 30,
-                fontWeight: FontWeight.bold,
-                color: Colors.white
-            ),
-          ),
-        ),
-
-        const SizedBox(height: 4),
-
-        const Center(
-          child: Text(
-            "Unlock exclusive perks as you level Up",
-            style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.normal,
-                color: Colors.grey
-            ),
-          ),
-        ),
-
-        const SizedBox(height: 40),
 
         Row(
           children: [
