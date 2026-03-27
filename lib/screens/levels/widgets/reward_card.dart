@@ -5,7 +5,10 @@ class RewardCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return
+    Column(
+      children: [
+      Container(
       height: 200,
       width: 400,
       // padding: const EdgeInsets.all(2),
@@ -65,7 +68,7 @@ class RewardCard extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: Colors.orange.withOpacity(0.1),
                   border: Border.all(
-                    color: Colors.orange.withOpacity(0.3)
+                      color: Colors.orange.withOpacity(0.3)
                   ),
                   borderRadius: BorderRadius.circular(10),
                 ),
@@ -86,7 +89,7 @@ class RewardCard extends StatelessWidget {
                   vertical:10,
                 ),
                 decoration: BoxDecoration(
-                    color: Color(0xFF1E2939),
+                  color: Color(0xFF1E2939),
 
                   border: Border.all(
                     color: Color(0xFF313C4E),
@@ -107,6 +110,35 @@ class RewardCard extends StatelessWidget {
           ),
         ),
       ),
+    ),
+        const SizedBox(height: 60),
+        const Center(
+          child: Text(
+            "Levels Overview",
+            style: TextStyle(
+                fontSize: 30,
+                fontWeight: FontWeight.bold,
+                color: Colors.white
+            ),
+          ),
+        ),
+
+        const SizedBox(height: 4),
+
+        const Center(
+          child: Text(
+            "Unlock exclusive perks as you level Up",
+            style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.normal,
+                color: Colors.grey
+            ),
+          ),
+        ),
+
+        // const SizedBox(height: 40),
+      ],
     );
+
   }
 }

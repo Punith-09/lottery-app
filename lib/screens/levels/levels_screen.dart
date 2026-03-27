@@ -55,7 +55,7 @@ class _LevelsScreenState extends State<LevelsScreen> {
 
                       const RewardCard(),
 
-                      const SizedBox(height: 80),
+                      const SizedBox(height: 40),
 
                       const LevelsOverview(),
 
