@@ -15,7 +15,82 @@ class AppMenu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    final halfHeight = MediaQuery.of(context).size.height * 0.79;
+    final halfHeight = MediaQuery.of(context).size.height * 0.85;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     return Align(
       alignment: Alignment.topCenter,
