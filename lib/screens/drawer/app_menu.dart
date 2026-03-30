@@ -16,82 +16,6 @@ class AppMenu extends StatelessWidget {
   Widget build(BuildContext context) {
 
     final halfHeight = MediaQuery.of(context).size.height * 0.85;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     return Align(
       alignment: Alignment.topCenter,
       child: Container(
@@ -119,7 +43,6 @@ class AppMenu extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
-                        // color: Color(0xFFFFC857),
                           color: AppColors.accent
                       ),
                     ),
@@ -198,7 +121,6 @@ class AppMenu extends StatelessWidget {
                         ],
                       )
                     ),
-                    // Expanded(
                       ElevatedButton(
 
                         style: ElevatedButton.styleFrom(
@@ -219,11 +141,9 @@ class AppMenu extends StatelessWidget {
                           ),
                         ),
                       ),
-                    // ),
 
                     const SizedBox(height: 10),
 
-                    // Expanded(
                        ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xFF00C896),
