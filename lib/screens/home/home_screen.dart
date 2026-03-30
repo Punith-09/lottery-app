@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:lottery_app/core/constants/app_constants.dart';
 import 'package:lottery_app/screens/drawer/custom_drawer.dart';
+import 'package:lottery_app/screens/levels/widgets/levels_overview.dart';
 import '../drawer/app_menu.dart';
 import 'package:lottery_app/screens/drawer/app_footer.dart';
+
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -69,6 +71,11 @@ class _HomeScreenState extends State<HomeScreen> {
                       _buildHeroButtons(),
 
                       const SizedBox(height: 50),
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(24),
+                        child: Image.asset("assets/banner-3.jpeg", height: 250, width: double.infinity, fit: BoxFit.cover),
+                      ),
+                      const SizedBox(height: 50),
                       const Text(
                         "Featured Games",
                         style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: Colors.white),
@@ -78,22 +85,12 @@ class _HomeScreenState extends State<HomeScreen> {
                         "Choose from our exciting lottery games",
                         style: TextStyle(color: AppColors.textSecondary, fontSize: 16),
                       ),
-                      const SizedBox(height: 25),
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(24),
-                        child: Image.asset("assets/banner-3.jpeg", height: 250, width: double.infinity, fit: BoxFit.cover),
-                      ),
 
-                      const SizedBox(height: 60),
+                      const SizedBox(height: 150),
                       _buildSpecialOffersSection(),
 
                       const SizedBox(height: 60),
-                      const Center(
-                        child: Text(
-                          "10-Level Rewards System",
-                          style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.white),
-                        ),
-                      ),
+                      const LevelsOverview(),
 
                       const SizedBox(height: 90),
                       _buildRecentWinnersSection(),
@@ -171,7 +168,7 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: const [
-              Text("Join Now", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+              Text("Get Started", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
               SizedBox(width: 8),
               Icon(Icons.arrow_forward, size: 18),
             ],
@@ -479,7 +476,7 @@ class _HomeScreenState extends State<HomeScreen> {
             radius: 35,
             backgroundColor: const Color(0xFF0A1F1D),
             child: Container(
-              decoration: BoxDecoration(shape: BoxShape.circle, border: Border.all(color: Colors.white.withOpacity(0.5), width: 1)),
+              decoration: BoxDecoration(shape: BoxShape.circle, border: Border.all(color: Colors.white.withOpacity(1.0), width: 1)),
               child: Center(child: Text(initials, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20))),
             ),
           ),
