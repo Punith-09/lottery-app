@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lottery_app/screens/drawer/app_footer.dart';
 import 'package:lottery_app/screens/drawer/custom_drawer.dart';
 import 'package:lottery_app/screens/wallet/widgets/userwallet_details.dart';
 import 'package:lottery_app/screens/wallet/widgets/wallet_features.dart';
@@ -54,7 +55,9 @@ class _WalletScreenState extends State<WalletScreen> {
                       const SizedBox(height: 20),
                       const UserwalletDetails(),
                       const SizedBox(height:40),
-                      const WalletFeatures()
+                      const WalletFeatures(),
+                      const SizedBox(height: 80),
+                      const AppFooter()
                     ],
                   ),
                 ),
@@ -69,7 +72,6 @@ class _WalletScreenState extends State<WalletScreen> {
               ),
             ),
 
-          /// MENU
           if (isMenuOpen)
             AppMenu(
               onClose: toggleMenu,
