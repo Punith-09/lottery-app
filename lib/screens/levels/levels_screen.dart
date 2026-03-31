@@ -5,6 +5,7 @@ import 'package:lottery_app/screens/levels/widgets/levels_description.dart';
 import 'package:lottery_app/screens/levels/widgets/levels_overview.dart';
 import 'package:lottery_app/screens/levels/widgets/reward_card.dart';
 
+import '../drawer/app_footer.dart';
 import '../drawer/app_menu.dart';
 
 class LevelsScreen extends StatefulWidget {
@@ -55,7 +56,7 @@ class _LevelsScreenState extends State<LevelsScreen> {
 
                       const RewardCard(),
 
-                      const SizedBox(height: 80),
+                      const SizedBox(height: 40),
 
                       const LevelsOverview(),
 
@@ -65,7 +66,10 @@ class _LevelsScreenState extends State<LevelsScreen> {
 
                       const SizedBox(height: 60),
 
-                      const LevelsDescription()
+                      const LevelsDescription(),
+
+                      const SizedBox(height: 80),
+                      const AppFooter()
                     ],
                   ),
                 ),

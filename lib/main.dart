@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:lottery_app/screens/auth/login_screen.dart';
+import 'package:lottery_app/screens/auth/signup_screen.dart';
 import 'package:lottery_app/screens/drawer/custom_drawer.dart';
 import 'package:lottery_app/screens/games/games_screen.dart';
 import 'package:lottery_app/screens/home/home_screen.dart';
@@ -31,6 +33,8 @@ class MyApp extends StatelessWidget {
           '/levels': (context) => const LevelsScreen(),
           '/wallet': (context) => const WalletScreen(),
           '/how-to-play': (context) => const HowToPlayScreen(),
+          '/login':(context)=> const LoginScreen(),
+          '/signup':(context)=> const SignupScreen()
         }
     );
   }
