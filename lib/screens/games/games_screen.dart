@@ -49,54 +49,6 @@ class _GamesScreenState extends State<GamesScreen> {
             return {
               "title": game['name'],
               "amount": "₹${game['prizePool']}",
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
               "players": game['currentEntries'],
               "odds": "1 in ${game['maxEntries']}",
               "price": game['ticketPrice'],
