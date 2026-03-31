@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:lottery_app/core/constants/app_constants.dart';
 import 'package:lottery_app/screens/drawer/app_footer.dart';
 import 'package:lottery_app/screens/drawer/custom_drawer.dart';
@@ -34,7 +35,6 @@ class _GamesScreenState extends State<GamesScreen> {
     fetchGames();
   }
 
-  // ✅ FETCH API DATA
   Future<void> fetchGames() async {
     try {
       final response = await ApiServices.getRequest("/draws");
@@ -68,7 +68,7 @@ class _GamesScreenState extends State<GamesScreen> {
     }
   }
 
-  // ✅ CATEGORY MAPPER
+
   String _mapCategory(String type) {
     switch (type) {
       case "Mega Millions":
@@ -90,7 +90,7 @@ class _GamesScreenState extends State<GamesScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // ✅ FIXED: SHOW ALL GAMES
+
     List<Map<String, dynamic>> displayedGames = selectedCategory == "All"
         ? allGames
         : allGames
@@ -266,18 +266,38 @@ class _GamesScreenState extends State<GamesScreen> {
       width: double.infinity,
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: const Color(0xFF051C1A),
+        color: const Color(0xFF0A0F0D),
         borderRadius: BorderRadius.circular(24),
         border: Border.all(color: const Color(0xFF0A2E2A)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(game['title'],
-              style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold)),
+
+          Row(
+            children: [
+              Container(
+                padding: EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Color(0xFF09271D),
+                  borderRadius: BorderRadius.circular(10)
+                ),
+                child: SvgPicture.asset(
+                  "assets/trophy.svg",
+                  width: 28,
+                  height: 28,
+                  color: Color(0xFFFDB700),
+                ),
+              ),
+              const SizedBox(width: 10),
+              Text(game['title'],
+                  style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold)),
+            ],
+          ),
+
           const SizedBox(height: 20),
           Text(game['amount'],
               style: const TextStyle(
@@ -285,25 +305,114 @@ class _GamesScreenState extends State<GamesScreen> {
                   fontSize: 32,
                   fontWeight: FontWeight.bold)),
           const SizedBox(height: 15),
-          Text("${game['players']} players",
-              style: const TextStyle(color: Colors.white54)),
+          Text(
+            "NEXT DRAW",
+            style: TextStyle(
+              color: Color(0xFFFFFFFF),
+              fontSize: 14,
+              fontWeight: FontWeight.bold
+            ),
+          ),
           const SizedBox(height: 10),
-          Text("Odds: ${game['odds']}",
-              style: const TextStyle(color: AppColors.primary)),
+          Row(
+            children: [
+              _timerBox("00", "Days"),
+              const SizedBox(width: 10),
+              _timerBox("00", "Hrs"),
+              const SizedBox(width:10),
+              _timerBox("00", "Min"),
+              const SizedBox(width: 10),
+              _timerBox("00", "Sec"),
+
+
+            ],
+          ),
+
+          const SizedBox(height: 15),
+          Divider(color: Color(0x50FFFFFF)),
+          const SizedBox(height: 15),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                children: [
+                  SvgPicture.asset(
+                    "assets/users.svg",
+                    height: 16,
+                    width: 16,
+                    color: Color(0xFF8EA8A1),
+                  ),
+                  const SizedBox(width: 10),
+                  Text("${game['players']} players",
+                      style: const TextStyle(
+                          color: Colors.white,
+                        fontWeight: FontWeight.bold
+                      )),
+                ],
+              ),
+              
+              // const SizedBox(width: 20),
+              Text("Odds: ${game['odds']}",
+                  style: const TextStyle(
+                      color: AppColors.primary,
+                    fontWeight: FontWeight.bold
+                  )),
+            ],
+          ),
+
           const SizedBox(height: 20),
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(
               onPressed: () {},
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primary,
+                backgroundColor: Color(0xFF00FDA2),
                 foregroundColor: Colors.black,
               ),
-              child: Text("Play - ${game['price']}"),
+              child: Text("Play - ${game['price']} "),
             ),
           )
         ],
       ),
     );
   }
+}
+
+
+Widget _timerBox(String count,String title){
+  return
+  Column(
+    children: [
+  Container(
+  padding: EdgeInsets.all(15),
+  decoration: BoxDecoration(
+  color: Color(0xFF0A0F0D),
+  borderRadius: BorderRadius.circular(15),
+  border: Border.all(
+  color: Color(0xFF083A28)
+  )
+  ),
+  child: Text(
+  count,
+  style: TextStyle(
+  color: Color(0xFF00FDA2),
+    fontWeight: FontWeight.bold,
+    fontSize: 18
+  ),
+  ),
+  ),
+
+      const SizedBox(height: 6),
+      Text(
+        title,
+        style: TextStyle(
+            color: Color(0xFFFFFFFF),
+            fontWeight: FontWeight.bold,
+            fontSize: 13
+        ),
+      )
+    ],
+  );
+
+
 }

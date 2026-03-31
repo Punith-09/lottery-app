@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:lottery_app/screens/drawer/app_footer.dart';
 import 'package:lottery_app/screens/drawer/custom_drawer.dart';
 import 'package:lottery_app/screens/how_to_play/widgets/howtoplay_card.dart';
+import 'package:lottery_app/screens/how_to_play/widgets/questions_card.dart';
+// import 'package:lottery_app/screens/how_to_play/widgets/questions_card.dart';
 import 'package:lottery_app/screens/how_to_play/widgets/security_compliance.dart';
 
 import '../drawer/app_menu.dart';
@@ -57,7 +60,30 @@ class _HowToPlayScreenState extends State<HowToPlayScreen> {
 
                       const SizedBox(height:40),
 
-                      SecurityCompliance()
+                      SecurityCompliance(),
+
+                      const SizedBox(height: 100),
+                      Text(
+                        "   Frequently asked Questions",
+                        style: TextStyle(
+                          color: Color(0xFFFFFFFF),
+                          fontSize: 26,
+                          fontWeight: FontWeight.bold
+                        ),
+                      ),
+                      const SizedBox(height: 26),
+                      QuestionsCard(title: "How do i know the draws are fair?", description: "All draws use a verifiable RNG that is \n independently audited."),
+
+                      const SizedBox(height: 16),
+                      QuestionsCard(title: "What os the minimum deposit?", description: "The minimum deposit is \$5 via any supported \npayment method."),
+                      const SizedBox(height: 16),
+                      QuestionsCard(title: "How long do withdrawls take?", description: "Standard withdrawals are processed within 24 hours."),
+                      const SizedBox(height: 16),
+                      QuestionsCard(title: "Can i set up auto-draw subscriptions?", description: "Yes! You can subscribe to automatic ticket purchases."),
+                      const SizedBox(height: 16),
+                      QuestionsCard(title: "How does the referal program work?", description: "Share your referral code and earn bonus credits."),
+                      const SizedBox(height: 100),
+                      AppFooter()
                     ],
                   ),
                 ),
