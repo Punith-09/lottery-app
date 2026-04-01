@@ -50,23 +50,28 @@ class _DrawsScreenState extends State<DrawsScreen> {
                       AdminDrawer(onMenuPressed: toggleMenu,),
 
                       const SizedBox(height: 20),
+                      Column(
 
-                      Text(
-                          "Draws",
-                        style: TextStyle(
-                          color: Color(0xFF000000),
-                          fontSize: 26,
-                          fontWeight: FontWeight.bold
-                        ),
+                        children: [
+                          Text(
+                            "Draws",
+                            style: TextStyle(
+                                color: Color(0xFF000000),
+                                fontSize: 26,
+                                fontWeight: FontWeight.bold
+                            ),
+                          ),
+                          Text(
+                            "Manage all lottery draws",
+                            style: TextStyle(
+                                color: Color(0x50000000),
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold
+                            ),
+                          ),
+                        ],
                       ),
-                      Text(
-                        "Manage all lottery draws",
-                        style: TextStyle(
-                            color: Color(0x50000000),
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold
-                        ),
-                      ),
+
                       
                       const SizedBox(height: 20),
                      Row(

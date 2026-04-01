@@ -13,7 +13,7 @@ class DrawerMenu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    final halfHeight = MediaQuery.of(context).size.height * 0.85;
+    final halfHeight = MediaQuery.of(context).size.height * 0.65;
     return Align(
       alignment: Alignment.topCenter,
       child: Container(
