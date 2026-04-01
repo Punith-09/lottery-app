@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:lottery_app/screens/admin/create_Draw.dart';
 
 import '../../core/constants/app_constants.dart';
 
@@ -131,7 +132,12 @@ class AppMenu extends StatelessWidget {
                           ),
                         ),
                         onPressed: () {
-                          Navigator.pushNamed(context, '/login');
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => CreateDrawScreen(),
+                            ),
+                          );
                         },
                         child: const Text(
                           "Login",
