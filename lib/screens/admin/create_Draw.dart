@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:lottery_app/services/api_services.dart';
+
 class CreateDrawScreen extends StatefulWidget {
   const CreateDrawScreen({super.key});
 
@@ -8,333 +10,224 @@ class CreateDrawScreen extends StatefulWidget {
 
 class _CreateDrawScreenState extends State<CreateDrawScreen> {
   final _formKey = GlobalKey<FormState>();
+
   String _status = 'Draft';
   bool _isGuaranteed = false;
+
+  // ✅ Controllers
+  final gameTypeIdController = TextEditingController();
+  final nameController = TextEditingController();
+  final descriptionController = TextEditingController();
+  final prizePoolController = TextEditingController();
+  final ticketPriceController = TextEditingController();
+  final maxEntriesController = TextEditingController();
+  final minEntriesController = TextEditingController();
+  final rngController = TextEditingController();
+
+  // ✅ DATE CONTROLLERS
+  final drawDateController = TextEditingController();
+  final drawStartController = TextEditingController();
+  final drawEndController = TextEditingController();
+
+  // ✅ API CALL
+  Future<void> createDraw() async {
+    try {
+      final body = {
+        "game_type_id": int.tryParse(gameTypeIdController.text) ?? 0,
+        "created_by": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+        "name": nameController.text,
+        "description": descriptionController.text,
+        "prize_pool": int.tryParse(prizePoolController.text) ?? 0,
+        "ticket_price": int.tryParse(ticketPriceController.text) ?? 0,
+        "max_entries": int.tryParse(maxEntriesController.text) ?? 0,
+        "min_entries": int.tryParse(minEntriesController.text) ?? 0,
+        "status": _status,
+        "draw_date": drawDateController.text,
+        "draw_start_date": drawStartController.text,
+        "draw_end_date": drawEndController.text,
+        "rng_seed_hash": rngController.text,
+        "is_guaranteed": _isGuaranteed,
+      };
+
+      print("📤 REQUEST BODY: $body");
+
+      final response =
+      await ApiServices.postRequest("/create-draw", body);
+
+      print("✅ RESPONSE: $response");
+
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Draw Created Successfully ✅")),
+      );
+    } catch (e) {
+      print("❌ ERROR: $e");
+
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Error: $e")),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FA),
-      body: SingleChildScrollView(
-        child:Padding(padding: const EdgeInsets.all(24.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-                const Text(
-                  'Draws',
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black87,
+      body: Builder( // ✅ FIX for Snackbar context
+        builder: (context) {
+          return SingleChildScrollView(
+            padding: const EdgeInsets.all(24),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Create Draw',
+                    style: TextStyle(
+                        fontSize: 22, fontWeight: FontWeight.bold),
                   ),
-                ),
-              const SizedBox(height: 4,),
-              const Text(
-                'Manage all lottery draws',
-                style: TextStyle(
-                  fontSize: 14,
-                  color: Colors.black54,
-                ),
-              ),
-              const SizedBox(height: 24),
-              //Form container
-              Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: Colors.black12),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.02),
-                      blurRadius: 10,
-                      spreadRadius: 2,
-                      offset: const Offset(0, 2),
-                    ),
-                  ]
-                ),
-                padding: const EdgeInsets.all(24.0),
-                child: Form(
-                  key: _formKey,
-                  child:Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'create Draw',
-                        style: TextStyle(
-                          fontSize:20,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black87,
-                        ),
-                      ),
-                      const SizedBox(height: 24,),
-                      LayoutBuilder(
-                        builder: (context, constraints) {
-                          bool isSmallScreen = constraints.maxWidth < 600;
 
-                          if (isSmallScreen) {
-                            return _buildSmallScreenLayout();
-                          } else {
-                            return _buildLargeScreenLayout();
-                          }
-                        },
-                      ),
-                      const SizedBox(height: 24),
-                      //Description field
-                      _buildLabel('Description'),
-                      const SizedBox(height: 8),
-                      TextFormField(
-                        maxLines: 5,
-                        style: const TextStyle(color: Colors.black87),
-                        decoration: _inputDecoration(),
-                      ),
-                      const SizedBox(height: 24),
-                      //submit button
-                  // submit button
+                  const SizedBox(height: 20),
+
+                  _buildTextField("Game Type ID", gameTypeIdController, isNumber: true),
+                  _buildTextField("Draw Name", nameController),
+                  _buildTextField("Prize Pool", prizePoolController, isNumber: true),
+                  _buildTextField("Ticket Price", ticketPriceController, isNumber: true),
+                  _buildTextField("Max Entries", maxEntriesController, isNumber: true),
+                  _buildTextField("Min Entries", minEntriesController, isNumber: true),
+                  _buildTextField("RNG Seed Hash", rngController),
+
+                  const SizedBox(height: 16),
+
+                  // ✅ DATE PICKERS
+                  _buildDateField("Draw Date", drawDateController),
+                  _buildDateField("Start Date", drawStartController),
+                  _buildDateField("End Date", drawEndController),
+
+                  const SizedBox(height: 16),
+
+                  TextFormField(
+                    controller: descriptionController,
+                    maxLines: 4,
+                    decoration: _inputDecoration("Description"),
+                  ),
+
+                  const SizedBox(height: 16),
+
+                  DropdownButtonFormField<String>(
+                    value: _status,
+                    decoration: _inputDecoration("Status"),
+                    items: ['Draft', 'Active', 'Closed']
+                        .map((e) => DropdownMenuItem(
+                      value: e,
+                      child: Text(e),
+                    ))
+                        .toList(),
+                    onChanged: (val) {
+                      setState(() {
+                        _status = val!;
+                      });
+                    },
+                  ),
+
+                  CheckboxListTile(
+                    value: _isGuaranteed,
+                    title: const Text("Guaranteed Draw"),
+                    onChanged: (val) {
+                      setState(() {
+                        _isGuaranteed = val!;
+                      });
+                    },
+                  ),
+
+                  const SizedBox(height: 20),
+
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
                       onPressed: () {
+                        print("🔥 BUTTON CLICKED");
+
                         if (_formKey.currentState!.validate()) {
-                          // perform save action
+                          createDraw();
                         }
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFFFFC107),
                         foregroundColor: Colors.black,
-                        elevation: 0,
-                        padding: const EdgeInsets.symmetric(vertical: 16), // ✅ FIX
-                        minimumSize: const Size(double.infinity, 50), // ✅ BETTER UI
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(6),
-                        ),
+                        padding:
+                        const EdgeInsets.symmetric(vertical: 16),
                       ),
-                      child: const Text(
-                        'Create Draw',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
+                      child: const Text("Create Draw"),
                     ),
                   ),
-
-
-                ]
-                ),
-              )
-              )],
-          ),
-        )
-      ),
-    );
-  }
-  Widget _buildLargeScreenLayout(){
-    return Column(
-      children: [
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(child: _buildTextFieldGroup('Game Type ID')),
-            const SizedBox(width: 24),
-            Expanded(child: _buildTextFieldGroup('Draw Name'))
-          ],
-        ),
-        const SizedBox(height: 16),
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(child: _buildTextFieldGroup('Max Entries')),
-            const SizedBox(width: 24),
-            Expanded(child: _buildTextFieldGroup('Min Entries')),
-          ],
-        ),
-        const SizedBox(height: 16),
-        const SizedBox(height: 16),
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(child: _buildDatePickerGroup('Draw Date')),
-            const SizedBox(width: 24),
-            Expanded(child: _buildDatePickerGroup('Draw Start Date')),
-          ],
-        ),
-        const SizedBox(height: 16),
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(child: _buildDatePickerGroup('Draw End Date')),
-            const SizedBox(width: 24),
-            Expanded(child: _buildTextFieldGroup('RNG Seed Hash')),
-          ],
-        ),
-        const SizedBox(height: 16),
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(child: _buildStatusDropdownGroup()),
-            const SizedBox(width: 24),
-            Expanded(child: Padding(padding: const EdgeInsets.only(top:24.0),
-              child: CheckboxListTile(contentPadding: EdgeInsets.zero,
-                controlAffinity: ListTileControlAffinity.leading,
-                title: const Text(
-                  'Guaranteed Draw',
-                  style: TextStyle(fontSize: 14,color:Colors.black87),
-                ),
-                value: _isGuaranteed,
-                onChanged: (bool? value){
-                    setState(() {
-                      _isGuaranteed = value ?? false;
-                    });
-                },
-                activeColor: const Color(0xFF2196F3),
+                ],
               ),
-            ))
-          ],
-        )
-      ],
-    );
-  }
-  Widget _buildSmallScreenLayout(){
-    return Column(
-      children: [
-        _buildTextFieldGroup('Game Type ID'),
-        const SizedBox(height: 16),
-        _buildTextFieldGroup('Draw Name'),
-        const SizedBox(height: 16),
-        _buildTextFieldGroup('Prize Pool'),
-        const SizedBox(height: 16),
-        _buildTextFieldGroup('Ticket Price'),
-        const SizedBox(height: 16),
-        _buildTextFieldGroup('Max Entries'),
-        const SizedBox(height: 16),
-        _buildTextFieldGroup('Min Entries'),
-        const SizedBox(height: 16),
-        _buildDatePickerGroup('Draw Date'),
-        const SizedBox(height: 16),
-        _buildDatePickerGroup('Draw Start Date'),
-        const SizedBox(height: 16),
-        _buildDatePickerGroup('Draw End Date'),
-        const SizedBox(height: 16),
-        _buildTextFieldGroup('RNG Seed Hash'),
-        const SizedBox(height: 16),
-        _buildStatusDropdownGroup(),
-        const SizedBox(height: 8),
-        CheckboxListTile(
-          contentPadding: EdgeInsets.zero,
-          controlAffinity: ListTileControlAffinity.leading,
-          title: const Text(
-            'Guaranted Draw',
-            style: TextStyle(fontSize: 14, color: Colors.black87),
-          ),
-          value: _isGuaranteed,
-          onChanged: (bool? Value){
-            setState(() {
-              _isGuaranteed = Value ?? false;
-            });
-          },
-          activeColor: const Color(0xFF2196F3),
-        )
-      ],
-    );
-  }
-  Widget _buildLabel(String text){
-    return Text(
-      text,
-      style: const TextStyle(
-        fontSize: 13,
-        fontWeight: FontWeight.w500,
-        color: Colors.black87,
+            ),
+          );
+        },
       ),
     );
   }
-  InputDecoration _inputDecoration({Widget? suffixIcon, String? hintText}){
+
+  // ✅ TEXT FIELD
+  Widget _buildTextField(String label, TextEditingController controller,
+      {bool isNumber = false}) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: TextFormField(
+        controller: controller,
+        keyboardType:
+        isNumber ? TextInputType.number : TextInputType.text,
+        decoration: _inputDecoration(label),
+        validator: (value) {
+          if (value == null || value.isEmpty) {
+            return "Required";
+          }
+          return null;
+        },
+      ),
+    );
+  }
+
+  // ✅ DATE PICKER FIELD
+  Widget _buildDateField(
+      String label, TextEditingController controller) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: TextFormField(
+        controller: controller,
+        readOnly: true,
+        decoration: _inputDecoration(label).copyWith(
+          suffixIcon: const Icon(Icons.calendar_today),
+        ),
+        onTap: () async {
+          DateTime? pickedDate = await showDatePicker(
+            context: context,
+            initialDate: DateTime.now(),
+            firstDate: DateTime(2000),
+            lastDate: DateTime(2100),
+          );
+
+          if (pickedDate != null) {
+            controller.text = pickedDate.toIso8601String();
+          }
+        },
+      ),
+    );
+  }
+
+  // ✅ INPUT DECORATION
+  InputDecoration _inputDecoration(String label) {
     return InputDecoration(
-      hintText: hintText,
-      hintStyle: const TextStyle(color: Colors.black54,fontSize: 14),
-      contentPadding: const EdgeInsets.symmetric(horizontal: 12,vertical: 14),
+      labelText: label,
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(6),
-        borderSide: const BorderSide(color: Color(0xFFE0E0E0)),
       ),
-      enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(6),
-        borderSide: const BorderSide(color: Color(0xFFE0E0E0)),
-      ),
-      focusedBorder: OutlineInputBorder(
-        borderRadius:BorderRadius.circular(6),
-        borderSide: const BorderSide(color: Color(0xFFE0E0E0)),
-      ),
-      suffixIcon: suffixIcon,
-      isDense: true,
-      fillColor: Colors.white,
-      filled:true,
-    );
-  }
-  Widget _buildTextFieldGroup(String label){
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _buildLabel(label),
-        const SizedBox(height: 8),
-        TextFormField(
-          style: const TextStyle(color: Colors.black87),
-          decoration: _inputDecoration(),
-        ),
-      ],
-    );
-  }
-  Widget _buildDatePickerGroup(String label){
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _buildLabel(label),
-        const SizedBox(height: 8,),
-        TextFormField(
-          readOnly: true,
-          style: const TextStyle(color:Colors.black87),
-          decoration: _inputDecoration(
-            hintText: 'dd-mm-yyyy --:--',
-            suffixIcon:const Icon(
-              Icons.calendar_today_outlined,
-              color: Colors.black87,
-              size: 20,
-            )
-          ),
-          onTap: () async{
-            //Future implementations for Datepicker
-          },
-        )
-      ],
-    );
-  }
-  Widget _buildStatusDropdownGroup() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _buildLabel('Status'),
-        const SizedBox(height: 8),
-        DropdownButtonFormField<String>(
-          value: _status,
-          dropdownColor: Colors.white,
-          icon: const Icon(Icons.keyboard_arrow_down, color: Colors.black87),
-          style: const TextStyle(color: Colors.black87, fontSize: 14),
-          decoration: _inputDecoration(),
-          items: ['Draft', 'Active', 'Closed']
-              .map((String value) {
-            return DropdownMenuItem<String>(
-              value: value,
-              child: Text(value),
-            );
-          })
-              .toList(),
-          onChanged: (String? newValue) {
-            setState(() {
-              _status = newValue!;
-            });
-          },
-        ),
-      ],
     );
   }
 }
-

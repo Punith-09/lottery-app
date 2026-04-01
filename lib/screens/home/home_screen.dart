@@ -102,7 +102,6 @@ class _HomeScreenState extends State<HomeScreen> {
                       _buildCenteredHeader("Platform Statistics", "Join a thriving community of lottery enthusiasts"),
                       const SizedBox(height: 40),
                       _buildStatsGrid(),
-
                       const SizedBox(height: 80),
                       _buildCenteredHeader("What Our Players Say", "Trusted by thousands of satisfied players worldwide"),
                       const SizedBox(height: 40),
