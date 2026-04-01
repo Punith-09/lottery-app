@@ -131,7 +131,7 @@ class AppMenu extends StatelessWidget {
                           ),
                         ),
                         onPressed: () {
-                          Navigator.pushNamed(context, '/login');
+                          Navigator.pushNamed(context, '/draws');
                         },
                         child: const Text(
                           "Login",

@@ -73,7 +73,6 @@ class _HowToPlayScreenState extends State<HowToPlayScreen> {
                       ),
                       const SizedBox(height: 26),
                       QuestionsCard(title: "How do i know the draws are fair?", description: "All draws use a verifiable RNG that is \n independently audited."),
-
                       const SizedBox(height: 16),
                       QuestionsCard(title: "What os the minimum deposit?", description: "The minimum deposit is \$5 via any supported \npayment method."),
                       const SizedBox(height: 16),
