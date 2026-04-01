@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
-
 import '../../core/constants/app_constants.dart';
 
 class AppMenu extends StatelessWidget {
@@ -132,6 +131,7 @@ class AppMenu extends StatelessWidget {
                           ),
                         ),
                         onPressed: () {
+                          Navigator.pushNamed(context, '/draws');
                         },
                         child: const Text(
                           "Login",
