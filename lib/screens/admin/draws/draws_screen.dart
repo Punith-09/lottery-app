@@ -25,8 +25,6 @@ class _DrawsScreenState extends State<DrawsScreen> {
     return Scaffold(
       body: Stack(
         children: [
-
-
           Container(
             decoration: const BoxDecoration(
               gradient: RadialGradient(
