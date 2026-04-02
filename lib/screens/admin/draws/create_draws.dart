@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:lottery_app/screens/admin/drawer/admin_drawer.dart';
 import 'package:lottery_app/screens/admin/drawer/drawer_menu.dart';
@@ -62,7 +61,7 @@ class _CreateDrawsState extends State<CreateDraws> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("✅ Draw created successfully")),
       );
-
+      Navigator.pushNamed(context, '/draws');
       print(response);
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -224,7 +223,7 @@ class _CreateDrawsState extends State<CreateDraws> {
     );
   }
 
-  // 🔹 INPUT STYLE FIXED
+
   InputDecoration _inputDecoration() {
     return InputDecoration(
       labelStyle: const TextStyle(color: Colors.black87),
