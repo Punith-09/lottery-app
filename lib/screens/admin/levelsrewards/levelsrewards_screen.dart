@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:lottery_app/screens/admin/draws/widgets/details_card.dart';
+import 'package:lottery_app/screens/admin/levelsrewards/widgets/points_configuration.dart';
 import '../drawer/admin_drawer.dart';
 import '../drawer/drawer_menu.dart';
 
-class DrawsScreen extends StatefulWidget {
-  const DrawsScreen({super.key});
+class LevelsRewardsScreen extends StatefulWidget {
+  const LevelsRewardsScreen({super.key});
 
   @override
-  State<DrawsScreen> createState() => _DrawsScreenState();
+  State<LevelsRewardsScreen> createState() => _LevelsScreenState();
 }
 
-class _DrawsScreenState extends State<DrawsScreen> {
+class _LevelsScreenState extends State<LevelsRewardsScreen> {
 
   bool isMenuOpen = false;
 
@@ -41,7 +42,7 @@ class _DrawsScreenState extends State<DrawsScreen> {
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: SingleChildScrollView(
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       const SizedBox(height: 20),
 
@@ -52,7 +53,7 @@ class _DrawsScreenState extends State<DrawsScreen> {
 
                         children: [
                           Text(
-                            "Draws",
+                            "Levels & Rewards",
                             style: TextStyle(
                                 color: Color(0xFF000000),
                                 fontSize: 26,
@@ -60,7 +61,7 @@ class _DrawsScreenState extends State<DrawsScreen> {
                             ),
                           ),
                           Text(
-                            "Manage all lottery draws",
+                            "Manage user levels and rewards",
                             style: TextStyle(
                                 color: Color(0x50000000),
                                 fontSize: 16,
@@ -69,62 +70,31 @@ class _DrawsScreenState extends State<DrawsScreen> {
                           ),
                         ],
                       ),
-
-                      
-                      const SizedBox(height: 20),
-                     Row(
-                       children: [
-                         Expanded(child: DetailsCard(svgIcon: "🎰", value: "0", title: "Live Draws", textColor: Color(0xFF16A24A)),),
-
-                         const SizedBox(width: 10),
-
-                         Expanded(child: DetailsCard(svgIcon: "⏳", value: "0", title: "Scheduled", textColor: Color(0xFF1E40AE)),)
-                       ],
-                     ),
-
-
                       const SizedBox(height: 20),
 
                       Row(
                         children: [
-                          Expanded(child: DetailsCard(svgIcon: "✅", value: "0", title: "Completed", textColor: Color(0xFFD77606)),),
+                          Expanded(child: DetailsCard(svgIcon: "🏅", value: "0", title: "Total Levels", textColor: Color(0xFF0890B1)),),
 
-                          const SizedBox(width: 20),
+                          const SizedBox(width: 10),
 
-                          Expanded(child: DetailsCard(svgIcon: "💰", value: "0", title: "Total Prizes Paid", textColor: Color(0xFF1E40AE)),)
+                          Expanded(child: DetailsCard(svgIcon: "👑", value: "0", title: "VIP Members", textColor: Color(0xFFD77606)),)
                         ],
                       ),
 
-                      const SizedBox(height: 20),
 
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                      Row(
                         children: [
-                          ElevatedButton(
+                          Expanded(child: DetailsCard(svgIcon: "💰", value: "0", title: "Rewards Paid", textColor: Color(0xFF16A24A)),),
 
-                            style: ElevatedButton.styleFrom(
-                              padding:EdgeInsets.all(18),
-                              backgroundColor: Color(0xFFD77606),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                            ),
-                            onPressed: () {
-                              Navigator.pushNamed(context, '/createDraws');
-                            },
-                            child: const Text(
-                              "🎯 Create Draw",
-                              style: TextStyle(
-                                color: Color(0xFF000000),
-                                fontWeight: FontWeight.bold,
-                                fontSize: 18
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: 200)
+                          const SizedBox(width: 10),
+
+                          Expanded(child: DetailsCard(svgIcon: "📊", value: "0", title: "Avg Level Progress", textColor: Color(0xFF7B3AEB)),),
                         ],
-                      )
+                      ),
+                      const SizedBox(height: 40),
 
+                      PointsConfiguration(),
                     ],
                   ),
                 ),

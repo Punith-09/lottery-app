@@ -3,14 +3,14 @@ import 'package:lottery_app/screens/admin/draws/widgets/details_card.dart';
 import '../drawer/admin_drawer.dart';
 import '../drawer/drawer_menu.dart';
 
-class DrawsScreen extends StatefulWidget {
-  const DrawsScreen({super.key});
+class UsersScreen extends StatefulWidget {
+  const UsersScreen({super.key});
 
   @override
-  State<DrawsScreen> createState() => _DrawsScreenState();
+  State<UsersScreen> createState() => _UsersScreenState();
 }
 
-class _DrawsScreenState extends State<DrawsScreen> {
+class _UsersScreenState extends State<UsersScreen> {
 
   bool isMenuOpen = false;
 
@@ -41,18 +41,20 @@ class _DrawsScreenState extends State<DrawsScreen> {
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: SingleChildScrollView(
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       const SizedBox(height: 20),
 
                       AdminDrawer(onMenuPressed: toggleMenu,),
 
                       const SizedBox(height: 20),
+                      Text("users"),
+
                       Column(
 
                         children: [
                           Text(
-                            "Draws",
+                            "Users",
                             style: TextStyle(
                                 color: Color(0xFF000000),
                                 fontSize: 26,
@@ -60,7 +62,7 @@ class _DrawsScreenState extends State<DrawsScreen> {
                             ),
                           ),
                           Text(
-                            "Manage all lottery draws",
+                            "Manage all platform users",
                             style: TextStyle(
                                 color: Color(0x50000000),
                                 fontSize: 16,
@@ -70,60 +72,32 @@ class _DrawsScreenState extends State<DrawsScreen> {
                         ],
                       ),
 
-                      
+
                       const SizedBox(height: 20),
-                     Row(
-                       children: [
-                         Expanded(child: DetailsCard(svgIcon: "🎰", value: "0", title: "Live Draws", textColor: Color(0xFF16A24A)),),
+                      Row(
+                        children: [
+                          Expanded(child: DetailsCard(svgIcon: "👥", value: "24,891", title: "Total Users", textColor: Color(0xFF16A24A)),),
 
-                         const SizedBox(width: 10),
+                          const SizedBox(width: 10),
 
-                         Expanded(child: DetailsCard(svgIcon: "⏳", value: "0", title: "Scheduled", textColor: Color(0xFF1E40AE)),)
-                       ],
-                     ),
+                          Expanded(child: DetailsCard(svgIcon: "✅", value: "21,340", title: "KYC Verified", textColor: Color(0xFF1E40AE)),)
+                        ],
+                      ),
 
 
                       const SizedBox(height: 20),
 
                       Row(
                         children: [
-                          Expanded(child: DetailsCard(svgIcon: "✅", value: "0", title: "Completed", textColor: Color(0xFFD77606)),),
+                          Expanded(child: DetailsCard(svgIcon: "🚫", value: "142", title: "Suspended", textColor: Color(
+                              0xFFDA2626)),),
 
                           const SizedBox(width: 20),
 
-                          Expanded(child: DetailsCard(svgIcon: "💰", value: "0", title: "Total Prizes Paid", textColor: Color(0xFF1E40AE)),)
+                          Expanded(child: DetailsCard(svgIcon: "⭐", value: "891", title: "New this week", textColor: Color(
+                              0xFFF3C418)),)
                         ],
                       ),
-
-                      const SizedBox(height: 20),
-
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          ElevatedButton(
-
-                            style: ElevatedButton.styleFrom(
-                              padding:EdgeInsets.all(18),
-                              backgroundColor: Color(0xFFD77606),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                            ),
-                            onPressed: () {
-                              Navigator.pushNamed(context, '/createDraws');
-                            },
-                            child: const Text(
-                              "🎯 Create Draw",
-                              style: TextStyle(
-                                color: Color(0xFF000000),
-                                fontWeight: FontWeight.bold,
-                                fontSize: 18
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: 200)
-                        ],
-                      )
 
                     ],
                   ),
