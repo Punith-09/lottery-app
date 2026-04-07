@@ -93,8 +93,6 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                 color: Colors.black.withOpacity(0.4),
               ),
             ),
-
-
           if (isMenuOpen)
             DrawerMenu(
               onClose: toggleMenu,

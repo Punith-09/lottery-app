@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lottery_app/screens/admin/Tickets/tickets_screen.dart';
 import 'package:lottery_app/screens/admin/categories/categories_screen.dart';
 import 'package:lottery_app/screens/admin/dashboard/dashboard_screen.dart';
 import 'package:lottery_app/screens/admin/draws/create_draws.dart';
@@ -50,6 +51,7 @@ class MyApp extends StatelessWidget {
           '/draws':(context)=>const DrawsScreen(),
           '/createDraws':(context)=>const CreateDraws(),
           '/categories':(context)=>const CategoriesScreen(),
+          '/tickets':(context)=>const TicketsScreen(),
         }
     );
   }
