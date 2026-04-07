@@ -29,6 +29,32 @@ class AdminDrawer extends StatelessWidget {
                   color: Color(0xFFD77606)
               ),
             ),
+            SizedBox(width: 90),
+            // 🔔 Notification Bell
+            Stack(
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.notifications,color: Color(0xFFFDC73D),size: 28,),
+                  onPressed: () {
+                    // open notifications
+                  },
+                ),
+
+                // 🔴 Red Dot Badge
+                Positioned(
+                  right: 10,
+                  top: 10,
+                  child: Container(
+                    width: 10,
+                    height: 10,
+                    decoration: const BoxDecoration(
+                      color: Colors.red,
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                ),
+              ],
+            ),
             IconButton(
               icon: const Icon(Icons.menu, color: Color(0xFF000000),size: 30,),
               onPressed: onMenuPressed,

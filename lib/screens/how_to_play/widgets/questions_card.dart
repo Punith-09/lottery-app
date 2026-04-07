@@ -57,7 +57,7 @@ class _QuestionsCardState extends State<QuestionsCard> {
                   height: 23,
                   color: isOpen
                       ? Colors.white
-                      : const Color(0xFFFFFFFF),
+                      : const Color(0x50FFFFFF),
                 ),
               ],
             ),
