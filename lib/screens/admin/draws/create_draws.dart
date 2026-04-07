@@ -22,8 +22,6 @@ class _CreateDrawsState extends State<CreateDraws> {
   final minEntriesController = TextEditingController();
   final rngSeedController = TextEditingController();
   final descriptionController = TextEditingController();
-
-  // 🔹 Date Controllers
   final drawDateController = TextEditingController();
   final drawStartDateController = TextEditingController();
   final drawEndDateController = TextEditingController();
@@ -40,7 +38,7 @@ class _CreateDrawsState extends State<CreateDraws> {
   Future<void> createDraw() async {
     final body = {
       "game_type_id": int.parse(gameTypeIdController.text),
-      "created_by": "7c536fc6-eab5-4773-a65e-8c9d8f31e5f7",
+      "created_by": "7229397f-7cda-4592-b352-2b5f2b27d008",
       "name": drawNameController.text,
       "description": descriptionController.text,
       "prize_pool": int.parse(prizePoolController.text),
