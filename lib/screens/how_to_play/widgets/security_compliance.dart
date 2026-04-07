@@ -44,7 +44,7 @@ class SecurityCompliance extends StatelessWidget{
 
           const SizedBox(height: 18),
 
-          Data(value: "PCI-DSS compliant payment \n processing"),
+          Data(value: "PCI-DSS compliant payments \n processing"),
 
           const SizedBox(height: 18),
 

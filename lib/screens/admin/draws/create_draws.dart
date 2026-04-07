@@ -185,7 +185,7 @@ class _CreateDrawsState extends State<CreateDraws> {
 
                               SizedBox(
                                 width: double.infinity,
-                                height: 50,
+                                height: 60,
                                 child: ElevatedButton(
                                   onPressed: () {
                                     if (_formKey.currentState!.validate()) {
@@ -193,10 +193,15 @@ class _CreateDrawsState extends State<CreateDraws> {
                                     }
                                   },
                                   style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.white,
+                                    backgroundColor: Color(0xFFD67506),
                                     foregroundColor: Colors.black,
                                   ),
-                                  child: const Text('Create Draw'),
+                                  child: const Text(
+                                      'Create Draw',
+                                    style: TextStyle(
+                                      fontSize: 20
+                                    ),
+                                  ),
                                 ),
                               ),
                             ],

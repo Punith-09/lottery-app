@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:lottery_app/screens/admin/dashboard/dashboard_screen.dart';
 import 'package:lottery_app/screens/admin/draws/create_draws.dart';
 import 'package:lottery_app/screens/admin/draws/draws_screen.dart';
+import 'package:lottery_app/screens/admin/levelsrewards/levelsrewards_screen.dart';
+import 'package:lottery_app/screens/admin/payments/payments_screen.dart';
+import 'package:lottery_app/screens/admin/users/users_screen.dart';
 import 'package:lottery_app/screens/auth/login_screen.dart';
 import 'package:lottery_app/screens/auth/signup_screen.dart';
 import 'package:lottery_app/screens/drawer/custom_drawer.dart';
@@ -37,6 +41,11 @@ class MyApp extends StatelessWidget {
           '/how-to-play': (context) => const HowToPlayScreen(),
           '/login':(context)=> const LoginScreen(),
           '/signup':(context)=> const SignupScreen(),
+
+          '/dashboard':(context)=> const DashboardScreen(),
+          '/users':(context)=> const UsersScreen(),
+          '/levelsRewards':(context)=> const LevelsRewardsScreen(),
+          '/payments':(context)=> const PaymentsScreen(),
           '/draws':(context)=>const DrawsScreen(),
           '/createDraws':(context)=>const CreateDraws(),
         }
