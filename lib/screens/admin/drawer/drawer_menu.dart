@@ -63,6 +63,9 @@ class DrawerMenu extends StatelessWidget {
                 menuItem(Icons.bar_chart_outlined, "Draws",() {
                   Navigator.pushNamed(context, '/draws');
                 }),
+                menuItem(Icons.category_outlined, "Categories",() {
+                  Navigator.pushNamed(context, '/categories');
+                }),
                 menuItem(Icons.leaderboard_outlined, "LevelsRewards",() {
                   Navigator.pushNamed(context, '/levelsRewards');
                 }),
