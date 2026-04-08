@@ -1,13 +1,42 @@
 import 'package:flutter/material.dart';
+import 'package:lottery_app/services/api_services.dart';
+import 'package:lottery_app/services/api_services.dart';
 
-class AdminLoginScreen extends StatelessWidget {
+
+class AdminLoginScreen extends StatefulWidget {
   const AdminLoginScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final emailController = TextEditingController();
-    final passwordController = TextEditingController();
+  State<AdminLoginScreen> createState() => _AdminLoginScreenState();
+}
 
+class _AdminLoginScreenState extends State<AdminLoginScreen> {
+  final emailController=TextEditingController();
+  final passwordController=TextEditingController();
+  bool isLoading = false;
+
+  Future<void> loginAdmin() async{
+    setState(() {
+      isLoading=true;
+    });
+    try{
+      final response = await ApiServices.postRequest("/admin/admin-login", {
+        "email":emailController.text.trim(),
+        "password":passwordController.text.trim(),
+      },);
+      print("Login Success:$response");
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Login Successful")),
+      );
+      Navigator.pushNamed(context, '/dashboard');
+    }catch(e){
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Login Failed: $e")),);
+    }
+    setState(() {
+      isLoading = false;
+    });
+  }
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFEDEDED),
       body: Center(
@@ -60,11 +89,12 @@ class AdminLoginScreen extends StatelessWidget {
               const SizedBox(height: 6),
               TextField(
                 controller: emailController,
+                style: const TextStyle(color: Colors.black),
                 decoration: InputDecoration(
                   hintText: "user@gmail.com",
-               
+
                   filled: true,
-                  fillColor: const Color(0xFFF1F3F6),
+                  fillColor: const Color(0xFFFFFFFF),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8),
                     borderSide: BorderSide.none,
@@ -73,83 +103,59 @@ class AdminLoginScreen extends StatelessWidget {
               ),
 
               const SizedBox(height: 16),
-              
+
               Align(
                 alignment: Alignment.centerLeft,
                 child: const Text(
                     "Password",
                   style: TextStyle(
-                    color: Color(0xFF000000)
+                    color: Color(0xFF011001)
                   ),
                 ),
               ),
               const SizedBox(height: 6),
               TextField(
                 controller: passwordController,
+                style: const TextStyle(color: Colors.black),
                 obscureText: true,
                 decoration: InputDecoration(
                   hintText: "Enter your password",
                   filled: true,
-                  fillColor: const Color(0xFFF1F3F6),
+                  fillColor: const Color(0xFFFFFFFF),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8),
                     borderSide: BorderSide.none,
                   ),
                 ),
               ),
-
               const SizedBox(height: 22),
-
-
-              // SizedBox(
-              //   width: double.infinity,
-              //   height: 45,
-              //   child: ElevatedButton(
-              //     style: ElevatedButton.styleFrom(
-              //       backgroundColor: Colors.black,
-              //       foregroundColor: Colors.white,
-              //       shape: RoundedRectangleBorder(
-              //         borderRadius: BorderRadius.circular(8),
-              //       ),
-              //     ),
-              //     onPressed: () {
-              //       final email = emailController.text.trim();
-              //       final password = passwordController.text.trim();
-              //
-              //       // TODO: Replace with your auth logic
-              //       print("Email: $email");
-              //       print("Password: $password");
-              //     },
-              //     child: const Text(
-              //       "Login",
-              //       style: TextStyle(
-              //           color: Colors.white,
-              //         fontSize: 20,
-              //         fontWeight: FontWeight.bold
-              //       ),
-              //     ),
-              //   ),
-              // ),
-
               SizedBox(
                 width: double.infinity,
-                height: 45,
+                height: 60,
                 child: ElevatedButton(
-                  style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all(Colors.black),
-                    foregroundColor: MaterialStateProperty.all(Colors.white),
-                    textStyle: MaterialStateProperty.all(
-                      const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.black,
+                    foregroundColor: Colors.white,
+                    textStyle: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
-                  onPressed: () {},
-                  child: const Text("Login"),
+                  onPressed: isLoading? null :loginAdmin,
+                  child: isLoading
+                    ? const CircularProgressIndicator(color: Colors.white)
+                      : const Text(
+                    "Login",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold
+                    ),
+
+                  )
                 ),
               )
+
             ],
           ),
         ),

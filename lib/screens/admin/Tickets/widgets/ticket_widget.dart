@@ -40,7 +40,7 @@ class TicketWidget extends StatelessWidget {
                   :ListView.builder(
                 itemCount: tickets.length,
                   itemBuilder:(context,index){
-                    final ticket = tickets[index];
+                    final ticket=tickets[index];
                     return SingleChildScrollView(
                       scrollDirection: Axis.horizontal,
                       child: Row(
