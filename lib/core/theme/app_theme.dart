@@ -39,7 +39,7 @@ class AppTheme {
       ),
     ),
 
-    // ✅ Elevated Button (Green Button)
+
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
         backgroundColor: AppColors.primary,

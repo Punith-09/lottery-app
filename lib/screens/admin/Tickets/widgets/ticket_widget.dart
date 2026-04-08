@@ -39,7 +39,7 @@ class TicketWidget extends StatelessWidget {
                   ? const Center(child:Text("No tickets found"))
                   :ListView.builder(
                 itemCount: tickets.length,
-                itemBuilder:(context,index){
+                  itemBuilder:(context,index){
                     final ticket = tickets[index];
                     return SingleChildScrollView(
                       scrollDirection: Axis.horizontal,
