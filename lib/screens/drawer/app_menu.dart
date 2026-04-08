@@ -19,7 +19,7 @@ class AppMenu extends StatelessWidget {
     return Align(
       alignment: Alignment.topCenter,
       child: Container(
-        height: halfHeight,
+        height: 800,
         width: double.infinity,
         decoration: const BoxDecoration(
           color: Color(0xFF0A0F0D),
@@ -162,6 +162,26 @@ class AppMenu extends StatelessWidget {
                           ),
                         ),
                       ),
+
+                    const SizedBox(height: 10),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF00C896),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      onPressed: () {
+                        Navigator.pushNamed(context, '/adminLogin');
+                      },
+                      child: const Text(
+                        "Admin Login",
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
                     // ),
                   ],
                 )
