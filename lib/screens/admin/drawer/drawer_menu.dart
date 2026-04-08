@@ -13,7 +13,7 @@ class DrawerMenu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    final halfHeight = MediaQuery.of(context).size.height * 0.65;
+    final halfHeight = MediaQuery.of(context).size.height * 0.75;
     return Align(
       alignment: Alignment.topCenter,
       child: Container(
@@ -63,11 +63,17 @@ class DrawerMenu extends StatelessWidget {
                 menuItem(Icons.bar_chart_outlined, "Draws",() {
                   Navigator.pushNamed(context, '/draws');
                 }),
+                menuItem(Icons.category_outlined, "Categories",() {
+                  Navigator.pushNamed(context, '/categories');
+                }),
                 menuItem(Icons.leaderboard_outlined, "LevelsRewards",() {
                   Navigator.pushNamed(context, '/levelsRewards');
                 }),
                 menuItem(Icons.account_balance_wallet_outlined, "Payments",() {
                   Navigator.pushNamed(context, '/payments');
+                }),
+                menuItem(Icons.airplane_ticket_outlined, "Tickets",() {
+                  Navigator.pushNamed(context, '/tickets');
                 }),
 
 
