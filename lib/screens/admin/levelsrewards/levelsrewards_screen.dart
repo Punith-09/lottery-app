@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lottery_app/screens/admin/draws/widgets/details_card.dart';
+import 'package:lottery_app/screens/admin/levelsrewards/widgets/active_level.dart';
 import 'package:lottery_app/screens/admin/levelsrewards/widgets/points_configuration.dart';
 import '../drawer/admin_drawer.dart';
 import '../drawer/drawer_menu.dart';
@@ -68,9 +69,55 @@ class _LevelsScreenState extends State<LevelsRewardsScreen> {
                                 fontWeight: FontWeight.bold
                             ),
                           ),
+                          const SizedBox(height: 20),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              ElevatedButton(
+                                
+                                  onPressed: (){},
+                                  style: ElevatedButton.styleFrom(
+                                    padding: EdgeInsets.all(18),
+                                    shadowColor: Color(0xFFF34A00),
+                                    backgroundColor: Color(0xFFFFFFFF),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadiusGeometry.circular(15),
+
+                                    )
+                                  ),
+                                  child: Text(
+                                    "+ Add Level Pool",
+                                    style: TextStyle(
+                                      color: Color(0xFFF34A00)
+                                    ),
+                                  )
+                              ),
+
+                              const SizedBox(width: 30),
+
+                              ElevatedButton(
+                                  onPressed: (){},
+                                  style: ElevatedButton.styleFrom(
+                                      padding: EdgeInsets.all(18),
+                                    backgroundColor: Color(0xFFF34A00),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadiusGeometry.circular(15),
+
+                                      )
+                                  ),
+                                  child: Text(
+                                    "+ Add Level Pool",
+                                    style: TextStyle(
+                                        color: Color(0xFFFFFFFF)
+                                    ),
+                                  )
+                              )
+                            ],
+                          )
                         ],
                       ),
-                      const SizedBox(height: 20),
+
+                      const SizedBox(height: 40),
 
                       Row(
                         children: [
@@ -94,7 +141,13 @@ class _LevelsScreenState extends State<LevelsRewardsScreen> {
                       ),
                       const SizedBox(height: 40),
 
+                      ActiveLevel(),
+
+                      const SizedBox(height: 40),
                       PointsConfiguration(),
+
+
+
                     ],
                   ),
                 ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lottery_app/screens/admin/draws/widgets/details_card.dart';
+import 'package:lottery_app/screens/admin/users/widgets/user_filterbar.dart';
 import '../drawer/admin_drawer.dart';
 import '../drawer/drawer_menu.dart';
 
@@ -89,16 +90,17 @@ class _UsersScreenState extends State<UsersScreen> {
 
                       Row(
                         children: [
-                          Expanded(child: DetailsCard(svgIcon: "🚫", value: "142", title: "Suspended", textColor: Color(
-                              0xFFDA2626)),),
+                          Expanded(child: DetailsCard(svgIcon: "🚫", value: "142", title: "Suspended", textColor: Color(0xFFDA2626)),),
 
                           const SizedBox(width: 20),
 
-                          Expanded(child: DetailsCard(svgIcon: "⭐", value: "891", title: "New this week", textColor: Color(
-                              0xFFF3C418)),)
+                          Expanded(child: DetailsCard(svgIcon: "⭐", value: "891", title: "New this week", textColor: Color(0xFFF3C418)),)
                         ],
                       ),
 
+                      const SizedBox(height: 40),
+
+                      UserFilterBar()
                     ],
                   ),
                 ),
