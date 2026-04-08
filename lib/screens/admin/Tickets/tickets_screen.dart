@@ -85,12 +85,12 @@ class _TicketsScreenState extends State<TicketsScreen> {
                   children: [
                     const SizedBox(height: 20),
 
-                    /// 🔹 TOP BAR
+
                     AdminDrawer(onMenuPressed: toggleMenu),
 
                     const SizedBox(height: 20),
 
-                    /// 🔹 TITLE
+
                     Column(
                       children: const [
                         Text(
@@ -114,7 +114,7 @@ class _TicketsScreenState extends State<TicketsScreen> {
 
                     const SizedBox(height: 20),
 
-                    /// 🔍 SEARCH BAR
+
                     SearchFilter(
                       controller: searchController,
                       onChanged: filterTickets,
@@ -123,19 +123,22 @@ class _TicketsScreenState extends State<TicketsScreen> {
 
                     const SizedBox(height: 20),
 
-                    /// 📊 TABLE (IMPORTANT: wrap with Expanded)
+
                     Expanded(
-                      child: TicketWidget(
+                      child:
+                      TicketWidget(
                         tickets: filteredTickets,
                       ),
                     ),
+                    const SizedBox(height: 20),
+
                   ],
                 ),
               ),
             ),
           ),
 
-          /// 🔹 OVERLAY
+
           if (isMenuOpen)
             GestureDetector(
               onTap: toggleMenu,
