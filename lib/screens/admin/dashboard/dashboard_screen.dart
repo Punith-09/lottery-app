@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:lottery_app/screens/admin/dashboard/widgets/details_card.dart';
 import 'package:lottery_app/screens/admin/dashboard/widgets/draws_card.dart';
 import 'package:lottery_app/screens/admin/dashboard/widgets/level_distribution.dart';
+import 'package:lottery_app/screens/admin/dashboard/widgets/revenue_card.dart';
 import 'package:lottery_app/screens/admin/dashboard/widgets/search_field.dart';
 import '../drawer/admin_drawer.dart';
 import '../drawer/drawer_menu.dart';
@@ -105,7 +106,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
                       const SizedBox(height: 50),
 
-                      LevelDistribution()
+                      LevelDistribution(),
+
+                      const SizedBox(height: 50),
+
+                      RevenueCard(),
+
+
                     ],
                   ),
                 ),

@@ -134,7 +134,7 @@ class AppMenu extends StatelessWidget {
                           Navigator.pushNamed(context, '/dashboard');
                         },
                         child: const Text(
-                          "Login",
+                        "Login",
                           style: TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
