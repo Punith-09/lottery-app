@@ -59,6 +59,9 @@ class AdminLoginScreen extends StatelessWidget {
               ),
               const SizedBox(height: 6),
               TextField(
+                style: TextStyle(
+                  color: Color(0xFF000000)
+                ),
                 controller: emailController,
                 decoration: InputDecoration(
                   hintText: "user@gmail.com",
@@ -71,6 +74,9 @@ class AdminLoginScreen extends StatelessWidget {
                   ),
                 ),
               ),
+
+
+
 
               const SizedBox(height: 16),
               
@@ -85,6 +91,9 @@ class AdminLoginScreen extends StatelessWidget {
               ),
               const SizedBox(height: 6),
               TextField(
+                style: TextStyle(
+                    color: Color(0xFF000000)
+                ),
                 controller: passwordController,
                 obscureText: true,
                 decoration: InputDecoration(
@@ -133,7 +142,7 @@ class AdminLoginScreen extends StatelessWidget {
 
               SizedBox(
                 width: double.infinity,
-                height: 45,
+                height: 60,
                 child: ElevatedButton(
                   style: ButtonStyle(
                     backgroundColor: MaterialStateProperty.all(Colors.black),
@@ -147,7 +156,12 @@ class AdminLoginScreen extends StatelessWidget {
                     ),
                   ),
                   onPressed: () {},
-                  child: const Text("Login"),
+                  child: const Text(
+                      "Login",
+                    style: TextStyle(
+                      color: Color(0xFFFFFFFF)
+                    ),
+                  ),
                 ),
               )
             ],

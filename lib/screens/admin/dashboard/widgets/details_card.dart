@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 // import 'package:flutter_svg/flutter_svg.dart';
 
-class DetailsCard extends StatelessWidget{
+class DetailsCard extends StatefulWidget{
   final String svgIcon;
   final String value;
   final String title;
@@ -17,6 +17,11 @@ class DetailsCard extends StatelessWidget{
     required this.textColor
   });
 
+  @override
+  State<DetailsCard> createState() => _DetailsCardState();
+}
+
+class _DetailsCardState extends State<DetailsCard> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -34,23 +39,23 @@ class DetailsCard extends StatelessWidget{
         children: [
 
               Text(
-                svgIcon,
+                widget.svgIcon,
                 style: TextStyle(
                   fontSize: 24,
                 ),
               ),
           const SizedBox(height: 15),
           Text(
-            value,
+            widget.value,
             style: TextStyle(
-                color: textColor,
+                color: widget.textColor,
                 fontWeight: FontWeight.bold,
                 fontSize: 24
             ),
           ),
           const SizedBox(height: 15),
           Text(
-            title,
+            widget.title,
             style: TextStyle(
                 color: Color(0xFF6A717F),
                 fontSize: 16
@@ -58,7 +63,7 @@ class DetailsCard extends StatelessWidget{
           ),
           const SizedBox(height: 15),
           Text(
-            "$percentage%",
+            "${widget.percentage}%",
             style: TextStyle(
               color: Color(0xFF16A24A),
               fontWeight: FontWeight.bold
