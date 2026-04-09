@@ -17,12 +17,15 @@ class DashboardScreen extends StatefulWidget {
 
 class _DashboardScreenState extends State<DashboardScreen> {
    int users=0;
+   String revenue="0";
   bool isMenuOpen = false;
 
    @override
    void initState() {
      super.initState();
-     fetchUsers(); // 👈 this was missing
+     fetchRevenue();
+     fetchUsers();
+
    }
 
   void toggleMenu() {
@@ -45,6 +48,31 @@ Future<void> fetchUsers() async {
     }
 }
 
+// Future<void> fetchRevenue() async{
+//      try{
+//        final response = await ApiServices.getRequest("/revenue");
+//        if(response["success"]){
+//          setState(() {
+//            revenue= response["revenue"];
+//          });
+//
+//        }
+//      }catch(e){debugPrint("Error: $e");}
+// }
+
+  Future<void> fetchRevenue() async {
+    try {
+      final response = await ApiServices.getRequest("/revenue");
+
+      if (response["success"]) {
+        setState(() {
+          revenue = (response["revenue"] ?? "0").toString();
+        });
+      }
+    } catch (e) {
+      debugPrint("Error: $e");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -84,6 +112,7 @@ Future<void> fetchUsers() async {
                             fontSize: 24
                           ),
                         ),
+
                         const SizedBox(height: 10),
                         Text(
                           "Welcome back to your control center",
@@ -105,7 +134,7 @@ Future<void> fetchUsers() async {
 
                           const SizedBox(width: 10),
 
-                          Expanded(child: DetailsCard(svgIcon: "💰", value: "0", title: "Total Revenue",percentage: "0", textColor: Color(0xFF16A24A)),)
+                          Expanded(child: DetailsCard(svgIcon: "💰", value: "$revenue", title: "Total Revenue",percentage: "0", textColor: Color(0xFF16A24A)),)
                         ],
                       ),
 
