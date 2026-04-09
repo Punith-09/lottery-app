@@ -81,6 +81,34 @@ class DrawerMenu extends StatelessWidget {
 
 
                 const SizedBox(height: 10),
+
+                SizedBox(
+                  width: double.infinity,
+                  height: 60,
+                  child: ElevatedButton(
+                    onPressed: (){
+                      Navigator.pushNamed(context, '/adminLogin');
+                    },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.black,
+                        foregroundColor: Colors.white,
+                        textStyle: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+
+                      child:  const Text(
+                        "LogOut",
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold
+                        ),
+
+                      )
+                  ),
+                )
               ],
             ),
           ),
