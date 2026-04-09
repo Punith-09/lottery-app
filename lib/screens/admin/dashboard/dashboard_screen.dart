@@ -4,6 +4,7 @@ import 'package:lottery_app/screens/admin/dashboard/widgets/draws_card.dart';
 import 'package:lottery_app/screens/admin/dashboard/widgets/level_distribution.dart';
 import 'package:lottery_app/screens/admin/dashboard/widgets/revenue_card.dart';
 import 'package:lottery_app/screens/admin/dashboard/widgets/search_field.dart';
+import 'package:lottery_app/services/api_services.dart';
 import '../drawer/admin_drawer.dart';
 import '../drawer/drawer_menu.dart';
 
@@ -15,13 +16,62 @@ class DashboardScreen extends StatefulWidget {
 }
 
 class _DashboardScreenState extends State<DashboardScreen> {
-
+   int users=0;
+   String revenue="0";
   bool isMenuOpen = false;
+
+   @override
+   void initState() {
+     super.initState();
+     fetchRevenue();
+     fetchUsers();
+
+   }
 
   void toggleMenu() {
     setState(() {
       isMenuOpen = !isMenuOpen;
     });
+  }
+Future<void> fetchUsers() async {
+    try{
+      final response = await ApiServices.getRequest("/users");
+      debugPrint("Response: $response");
+      if(response["success"]){
+        List data = response["data"];
+        setState(() {
+          users=data.length;
+        });
+      }
+    }catch(e){
+      debugPrint("Error: $e");
+    }
+}
+
+// Future<void> fetchRevenue() async{
+//      try{
+//        final response = await ApiServices.getRequest("/revenue");
+//        if(response["success"]){
+//          setState(() {
+//            revenue= response["revenue"];
+//          });
+//
+//        }
+//      }catch(e){debugPrint("Error: $e");}
+// }
+
+  Future<void> fetchRevenue() async {
+    try {
+      final response = await ApiServices.getRequest("/revenue");
+
+      if (response["success"]) {
+        setState(() {
+          revenue = (response["revenue"] ?? "0").toString();
+        });
+      }
+    } catch (e) {
+      debugPrint("Error: $e");
+    }
   }
 
   @override
@@ -62,6 +112,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             fontSize: 24
                           ),
                         ),
+
                         const SizedBox(height: 10),
                         Text(
                           "Welcome back to your control center",
@@ -79,11 +130,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       const SizedBox(height: 20),
                       Row(
                         children: [
-                          Expanded(child: DetailsCard(svgIcon: "👥", value: "0", title: "Total Users",percentage: "0", textColor:Color(0xFF1E40AE) )),
+                          Expanded(child: DetailsCard(svgIcon: "👥", value: "$users", title: "Total Users",percentage: "0", textColor:Color(0xFF1E40AE) ),),
 
                           const SizedBox(width: 10),
 
-                          Expanded(child: DetailsCard(svgIcon: "💰", value: "0", title: "Total Revenue",percentage: "0", textColor: Color(0xFF16A24A)),)
+                          Expanded(child: DetailsCard(svgIcon: "💰", value: "$revenue", title: "Total Revenue",percentage: "0", textColor: Color(0xFF16A24A)),)
                         ],
                       ),
 
