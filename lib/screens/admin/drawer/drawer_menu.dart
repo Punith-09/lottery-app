@@ -76,7 +76,7 @@ class DrawerMenu extends StatelessWidget {
                   Navigator.pushNamed(context, '/tickets');
                 }),
                 menuItem(Icons.airplane_ticket_outlined, "Wallet",() {
-                  Navigator.pushNamed(context, '/wallet');
+                  Navigator.pushNamed(context, '/adminWallet');
                 }),
 
 

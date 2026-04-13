@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:lottery_app/screens/admin/draws/widgets/details_card.dart';
 import 'package:lottery_app/screens/admin/levelsrewards/widgets/active_level.dart';
 import 'package:lottery_app/screens/admin/levelsrewards/widgets/points_configuration.dart';
+import 'package:lottery_app/services/api_services.dart';
 import '../drawer/admin_drawer.dart';
 import '../drawer/drawer_menu.dart';
 
@@ -13,15 +14,35 @@ class LevelsRewardsScreen extends StatefulWidget {
 }
 
 class _LevelsScreenState extends State<LevelsRewardsScreen> {
-
+  Map<String,dynamic> stats={};
   bool isMenuOpen = false;
 
+  @override
+  void initState(){
+    super.initState();
+    fetchStats();
+  }
+  
+  
   void toggleMenu() {
     setState(() {
       isMenuOpen = !isMenuOpen;
     });
   }
 
+  Future<void> fetchStats() async{
+    try{
+      final response = await ApiServices.getRequest("/admin/level-games/stats");
+      setState(() {
+        stats= response;
+      });
+
+    }catch(e){
+      debugPrint("Error: $e");
+    }
+  }
+  
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -121,22 +142,22 @@ class _LevelsScreenState extends State<LevelsRewardsScreen> {
 
                       Row(
                         children: [
-                          Expanded(child: DetailsCard(svgIcon: "🏅", value: "0", title: "Total Levels", textColor: Color(0xFF0890B1)),),
+                          Expanded(child: DetailsCard(svgIcon: "🏅", value: "${stats["totalGames"]}", title: "Total Levels", textColor: Color(0xFF0890B1)),),
 
                           const SizedBox(width: 10),
 
-                          Expanded(child: DetailsCard(svgIcon: "👑", value: "0", title: "VIP Members", textColor: Color(0xFFD77606)),)
+                          Expanded(child: DetailsCard(svgIcon: "👑", value: "${stats["activePools"]}", title: "VIP Members", textColor: Color(0xFFD77606)),)
                         ],
                       ),
 
 
                       Row(
                         children: [
-                          Expanded(child: DetailsCard(svgIcon: "💰", value: "0", title: "Rewards Paid", textColor: Color(0xFF16A24A)),),
+                          Expanded(child: DetailsCard(svgIcon: "💰", value: "${stats["totalUsers"]}", title: "Rewards Paid", textColor: Color(0xFF16A24A)),),
 
                           const SizedBox(width: 10),
 
-                          Expanded(child: DetailsCard(svgIcon: "📊", value: "0", title: "Avg Level Progress", textColor: Color(0xFF7B3AEB)),),
+                          Expanded(child: DetailsCard(svgIcon: "📊", value: "₹${stats["totalPayouts"]}", title: "Avg Level Progress", textColor: Color(0xFF7B3AEB)),),
                         ],
                       ),
                       const SizedBox(height: 40),
