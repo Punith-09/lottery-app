@@ -1,7 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-class UserwalletDetails extends StatelessWidget{
+class UserwalletDetails extends StatefulWidget{
+
   const UserwalletDetails({super.key});
+
+  @override
+  State<UserwalletDetails> createState() => _UserwalletDetailsState();
+}
+
+class _UserwalletDetailsState extends State<UserwalletDetails> {
+
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +63,76 @@ class UserwalletDetails extends StatelessWidget{
                 children: [
                   Expanded(
                     child: ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        showModalBottomSheet(
+                          context: context,
+                          isScrollControlled: true,
+                          backgroundColor: Color(0xFF0D1915),
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+                          ),
+                          builder: (context) {
+                            return Padding(
+                              padding: const EdgeInsets.all(20),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Container(
+                                    width: 40,
+                                    height: 5,
+                                    decoration: BoxDecoration(
+                                      color: Colors.grey,
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 20),
+
+                                  Text(
+                                    "Add Money to Wallet",
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+
+                                  const SizedBox(height: 20),
+                                  Text(
+                                    "Amount (Min ₹50)",
+                                    textAlign: TextAlign.start,
+                                  ),
+                                  const SizedBox(height: 10),
+                                  TextField(
+                                    keyboardType: TextInputType.number,
+                                    decoration: InputDecoration(
+                                      hintText: "₹ Enter amount",
+                                      filled: true,
+                                      fillColor: Color(0xFF1C2B26),
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                    ),
+                                  ),
+
+                                  const SizedBox(height: 20),
+
+                                  ElevatedButton(
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Color(0xFF00BB7C),
+                                      minimumSize: Size(double.infinity, 50),
+                                    ),
+                                    child: Text("Proceed to Pay"),
+                                  ),
+
+                                  const SizedBox(height: 20),
+                                ],
+                              ),
+                            );
+                          },
+                        );
+                      },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Color(0xFF00BB7C),
                         shape: RoundedRectangleBorder(
@@ -202,7 +279,8 @@ class UserwalletDetails extends StatelessWidget{
               )
             ],
           ),
-        )
+        ),
+
       ],
     );
   }
