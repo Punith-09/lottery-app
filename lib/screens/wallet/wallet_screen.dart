@@ -3,7 +3,9 @@ import 'package:lottery_app/screens/drawer/app_footer.dart';
 import 'package:lottery_app/screens/drawer/custom_drawer.dart';
 import 'package:lottery_app/screens/wallet/widgets/userwallet_details.dart';
 import 'package:lottery_app/screens/wallet/widgets/wallet_features.dart';
-
+import 'package:provider/provider.dart';
+import 'package:lottery_app/providers/wallet_provider.dart';
+import 'package:lottery_app/services/api_services.dart';
 import '../drawer/app_menu.dart';
 
 class WalletScreen extends StatefulWidget {
@@ -16,6 +18,33 @@ class WalletScreen extends StatefulWidget {
 class _WalletScreenState extends State<WalletScreen> {
 
   bool isMenuOpen = false;
+  bool isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    // Fetch initial balance when user enters the screen
+    _fetchWalletBalance();
+  }
+
+  Future<void> _fetchWalletBalance() async{
+    setState(() {
+      isLoading=true;
+    });
+    try{
+      final response = await ApiServices.getRequest("/wallet");
+      if(response!=null && response['success']==true){
+        double balance =double.parse(response['balance'].toString());
+        context.read<WalletProvider>().setBalance(balance);
+      }
+    }catch(e){
+      debugPrint("WALLET API ERROR:$e");
+    }finally{
+      if(mounted) setState(() {
+        isLoading=false;
+      });
+    }
+  }
 
   void toggleMenu() {
     setState(() {
@@ -28,8 +57,6 @@ class _WalletScreenState extends State<WalletScreen> {
     return Scaffold(
       body: Stack(
         children: [
-
-
           Container(
             decoration: const BoxDecoration(
               gradient: RadialGradient(
@@ -53,6 +80,9 @@ class _WalletScreenState extends State<WalletScreen> {
                       CustomDrawer(onMenuPressed: toggleMenu,),
 
                       const SizedBox(height: 20),
+                      isLoading
+                          ? const Center(child: CircularProgressIndicator())
+                          : const UserwalletDetails(),
                       const UserwalletDetails(),
                       const SizedBox(height:40),
                       const WalletFeatures(),

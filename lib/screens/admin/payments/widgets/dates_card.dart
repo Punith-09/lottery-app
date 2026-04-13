@@ -1,45 +1,3 @@
-// import 'package:flutter/material.dart';
-//
-// class DatesCard extends StatelessWidget{
-//   const DatesCard({super.key});
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Container(
-//       decoration: BoxDecoration(
-//         borderRadius: BorderRadius.circular(15),
-//         border: Border.all(
-//           color: Color(0xFF878787)
-//         )
-//       ),
-//       child: Column(
-//         children: [
-//           Row(
-//             children: [
-//               Column(
-//                 children: [
-//                   Text(
-//                     "From Date",
-//                     style: TextStyle(
-//                       color: Color(0xFF000000),
-//
-//                     ),
-//                   ),
-//                   const SizedBox(height: 10),
-//                   InputDatePickerFormField(firstDate:, lastDate: lastDate)
-//                 ],
-//               )
-//             ],
-//           )
-//         ],
-//       ),
-//     );
-//   }
-// }
-
-
-
-
 import 'package:flutter/material.dart';
 
 class DatesCard extends StatelessWidget {
@@ -65,14 +23,14 @@ class DatesCard extends StatelessWidget {
           children: [
             Row(
               children: [
-                _buildDateField("From Date", "18-02-2026"),
-                _buildDateField("To Date", "25-02-2026"),
+                Expanded(child: _buildDateField("From Date", "18-02-2026")),
+                Expanded(child: _buildDateField("To Date", "25-02-2026")),
               ],
             ),
            Row(
              children: [
-               _buildDropdown("Type", ["All", "Type 1", "Type 2"]),
-               _buildDropdown("Status", ["All", "Active", "Inactive"]),
+               Expanded(child: _buildDropdown("Type", ["All", "Type 1", "Type 2"])),
+               Expanded(child: _buildDropdown("Status", ["All", "Active", "Inactive"])),
              ],
            ),
 
