@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:lottery_app/screens/admin/draws/widgets/details_card.dart';
 import 'package:lottery_app/screens/admin/users/widgets/user_filterbar.dart';
+import 'package:lottery_app/screens/admin/users/widgets/users_list.dart';
+import 'package:lottery_app/services/api_services.dart';
 import '../drawer/admin_drawer.dart';
 import '../drawer/drawer_menu.dart';
 
@@ -12,8 +14,16 @@ class UsersScreen extends StatefulWidget {
 }
 
 class _UsersScreenState extends State<UsersScreen> {
-
+  int usersCount = 0;
   bool isMenuOpen = false;
+  List<Map<String,dynamic>> users = [];
+
+  @override
+  void initState() {
+    super.initState();
+    fetchUsers();
+  }
+
 
   void toggleMenu() {
     setState(() {
@@ -21,6 +31,37 @@ class _UsersScreenState extends State<UsersScreen> {
     });
   }
 
+  // Future<void> fetchUsers() async{
+  //   try{
+  //     final response = await ApiServices.getRequest("/users");
+  //     if(response["success"]){
+  //       setState(() {
+  //         usersCount = response["count"];
+  //         users = response["data"];
+  //       });
+  //     }
+  //   }catch(e){
+  //     debugPrint("Error: $e");
+  //   }
+  // }
+
+  Future<void> fetchUsers() async {
+    try {
+      final response = await ApiServices.getRequest("/users");
+
+      if (response["success"]) {
+        setState(() {
+          usersCount = response["count"];
+
+          users = List<Map<String, dynamic>>.from(
+            response["data"].map((x) => Map<String, dynamic>.from(x)),
+          );
+        });
+      }
+    } catch (e) {
+      debugPrint("Error: $e");
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -77,7 +118,7 @@ class _UsersScreenState extends State<UsersScreen> {
                       const SizedBox(height: 20),
                       Row(
                         children: [
-                          Expanded(child: DetailsCard(svgIcon: "👥", value: "24,891", title: "Total Users", textColor: Color(0xFF16A24A)),),
+                          Expanded(child: DetailsCard(svgIcon: "👥", value: "$usersCount", title: "Total Users", textColor: Color(0xFF16A24A)),),
 
                           const SizedBox(width: 10),
 
@@ -94,13 +135,17 @@ class _UsersScreenState extends State<UsersScreen> {
 
                           const SizedBox(width: 20),
 
-                          Expanded(child: DetailsCard(svgIcon: "⭐", value: "891", title: "New this week", textColor: Color(0xFFF3C418)),)
+                          Expanded(child: DetailsCard(svgIcon: "⭐", value: "$usersCount", title: "New this week", textColor: Color(0xFFF3C418)),)
                         ],
                       ),
 
                       const SizedBox(height: 40),
 
-                      UserFilterBar()
+                      UserFilterBar(),
+
+                      const SizedBox(height: 40),
+
+                      UsersList(users: users)
                     ],
                   ),
                 ),
