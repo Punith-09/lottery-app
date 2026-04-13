@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lottery_app/screens/admin/draws/widgets/details_card.dart';
+import 'package:lottery_app/services/api_services.dart';
 import '../drawer/admin_drawer.dart';
 import '../drawer/drawer_menu.dart';
 
@@ -11,13 +12,62 @@ class DrawsScreen extends StatefulWidget {
 }
 
 class _DrawsScreenState extends State<DrawsScreen> {
-
+  List<Map<String,dynamic>> draws = [];
+  double liveDraws=0;
   bool isMenuOpen = false;
+  double totalPrizePool = 0;
+
+
+  @override
+  void initState(){
+    super.initState();
+    fetchDraws();
+  }
+
 
   void toggleMenu() {
     setState(() {
       isMenuOpen = !isMenuOpen;
     });
+  }
+
+  // Future<void> fetchDraws() async{
+  //   try{
+  //     final response = await ApiServices.getRequest("/draws");
+  //     if(response["success"]){
+  //       setState(() {
+  //         draws = response["data"];
+  //       });
+  //     }
+  //   }catch(e){
+  //     debugPrint("Error: $e");
+  //   }
+  // }
+
+
+  Future<void> fetchDraws() async {
+    try {
+      final response = await ApiServices.getRequest("/draws");
+      if (response["success"]) {
+        final List<Map<String, dynamic>> data = List<Map<String, dynamic>>.from(response["data"]);
+
+        double total = 0;
+        double live=0;
+        for (var draw in data) {
+          total += double.tryParse(draw["prizePool"].toString()) ?? 0;
+          if(draw["status"] == "live")
+            live= live+1;
+        }
+
+        setState(() {
+          draws = data;
+          totalPrizePool = total;
+          liveDraws = live;
+        });
+      }
+    } catch (e) {
+      debugPrint("Error: $e");
+    }
   }
 
   @override
@@ -74,7 +124,7 @@ class _DrawsScreenState extends State<DrawsScreen> {
                       const SizedBox(height: 20),
                      Row(
                        children: [
-                         Expanded(child: DetailsCard(svgIcon: "🎰", value: "0", title: "Live Draws", textColor: Color(0xFF16A24A)),),
+                         Expanded(child: DetailsCard(svgIcon: "🎰", value: liveDraws.toStringAsFixed(0), title: "Live Draws", textColor: Color(0xFF16A24A)),),
 
                          const SizedBox(width: 10),
 
@@ -91,7 +141,7 @@ class _DrawsScreenState extends State<DrawsScreen> {
 
                           const SizedBox(width: 20),
 
-                          Expanded(child: DetailsCard(svgIcon: "💰", value: "0", title: "Total Prizes Paid", textColor: Color(0xFF1E40AE)),)
+                          Expanded(child: DetailsCard(svgIcon: "💰", value: totalPrizePool.toStringAsFixed(0), title: "Total Prize Pool", textColor: Color(0xFF1E40AE)),)
                         ],
                       ),
 
@@ -121,7 +171,8 @@ class _DrawsScreenState extends State<DrawsScreen> {
                               ),
                             ),
                           ),
-                          const SizedBox(height: 200)
+                          const SizedBox(height: 200),
+
                         ],
                       )
 

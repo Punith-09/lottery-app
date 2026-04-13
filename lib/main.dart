@@ -55,7 +55,7 @@ class MyApp extends StatelessWidget {
           '/createDraws':(context)=>const CreateDraws(),
           '/categories':(context)=>const CategoriesScreen(),
           '/tickets':(context)=>const TicketsScreen(),
-          '/wallet':(context)=>const WalletScreenn(),
+          '/adminWallet':(context)=>const WalletScreenn(),
         }
     );
   }
