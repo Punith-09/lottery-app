@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lottery_app/providers/wallet_provider.dart';
 import 'package:lottery_app/screens/admin/Tickets/tickets_screen.dart';
 import 'package:lottery_app/screens/admin/Wallet/wallet_screen.dart';
 import 'package:lottery_app/screens/admin/auth/adminLogin_screen.dart';
@@ -18,13 +19,21 @@ import 'package:lottery_app/screens/how_to_play/how_to_play_screen.dart';
 import 'package:lottery_app/screens/levels/levels_screen.dart';
 import 'package:lottery_app/screens/results/results_screen.dart';
 import 'package:lottery_app/screens/wallet/wallet_screen.dart';
+import 'package:provider/provider.dart';
 
 import 'core/theme/app_theme.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => WalletProvider()),
+        // Add other providers here as your app grows
+      ],
+      child: const MyApp(),
+    ),
+  );
 }
-
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
