@@ -17,7 +17,7 @@ class DrawerMenu extends StatelessWidget {
     return Align(
       alignment: Alignment.topCenter,
       child: Container(
-        height: halfHeight,
+        height: MediaQuery.of(context).size.height/1.25,
         width: double.infinity,
         decoration: const BoxDecoration(
           color: Color(0xFFFFFFFF),

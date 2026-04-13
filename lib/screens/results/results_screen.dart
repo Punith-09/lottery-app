@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart'; // For date formatting
 import 'package:lottery_app/core/constants/app_constants.dart';
 import 'package:lottery_app/screens/drawer/app_footer.dart';
 import 'package:lottery_app/screens/drawer/custom_drawer.dart';
 import '../drawer/app_menu.dart';
+import 'package:lottery_app/services/api_services.dart';
+import 'package:lottery_app/screens/results/draw_result_model.dart';
 
 class ResultScreen extends StatefulWidget {
   const ResultScreen({super.key});
@@ -13,78 +16,44 @@ class ResultScreen extends StatefulWidget {
 
 class _ResultScreenState extends State<ResultScreen> {
   bool isMenuOpen = false;
-  String searchQuery="";
+  String searchQuery = "";
+  String selectedFilter = "All Draws";
 
-  // Data for the results list
-  final List<Map<String,dynamic>> results=[
-    {
-      "title":"Mega Millions",
-      "date":"Feb 22, 2026",
-      "numbers":[7,14,21,35,42],
-      "special":10,
-      "prize":"\$1,000,000",
-      "winners":"3 winners"
-    },
-    {
-      "title":"Super Jackpot",
-      "date":"Feb 20, 2026",
-      "numbers":[3,18,25,33,48],
-      "special":6,
-      "prize":"\$2,000,000",
-      "winners":"1 winner"
+  // API State Variables
+  List<DrawResult> allResults = [];
+  bool isLoading = true;
+  String? errorMessage;
 
-    },
-    {
-      "title":"Power Ball",
-      "date":"Feb 18, 2026",
-      "numbers":[5,12,28,37,44,15],
-      "special":7,
-      "prize":"\$5,00,000",
-      "winners":"5 winners"
-    },
-    {
-      "title":"Lucky 7",
-      "date":"Feb 18, 2026",
-      "numbers":[1,7,14,21,28,7],
-      "special":7,
-      "prize":"\$75,000",
-      "winners":"12 winners"
-    },
-    {
-      "title":"Daily Draw",
-      "date":"Feb 17, 2026",
-      "numbers":[9,16,23,31,39,4],
-      "special":4,
-      "prize":"\$10,000",
-      "winners":"45 winners"
-    },
-    {
-      "title":"Mega Millions",
-      "date":"Feb 15, 2026",
-      "numbers":[2,11,24,36,49,8],
-      "special":8,
-      "prize":"\$1,000,000",
-      "winners":"2 winners"
-    },
-    {
-      "title":"Diamond Rush",
-      "date":"Feb 14, 2026",
-      "numbers":[6,13,27,34,47,19],
-      "special":19,
-      "prize":"\$5,000,000",
-      "winners":"0 winners"
-    },
-    {
-      "title":"Golden Wheel",
-      "date":"Feb 13, 2026",
-      "numbers":[4,17,22,38,43,11],
-      "special":19,
-      "prize":"\$150,0000",
-      "winners":"8 winners"
-    },
+  @override
+  void initState() {
+    super.initState();
+    fetchDrawResults();
+  }
 
+  Future<void> fetchDrawResults() async {
+    try {
+      setState(() {
+        isLoading = true;
+        errorMessage = null;
+      });
 
-  ];
+      final response = await ApiServices.getRequest("/draw-results");
+
+      if (response['success'] == true) {
+        final List dataList = response['data'];
+        setState(() {
+          allResults = dataList.map((json) => DrawResult.fromJson(json)).toList();
+          isLoading = false;
+        });
+      }
+    } catch (e) {
+      debugPrint("Full API Error: $e");
+      setState(() {
+        errorMessage = "Failed to load results. Please try again.";
+        isLoading = false;
+      });
+    }
+  }
 
   void toggleMenu() {
     setState(() {
@@ -94,57 +63,61 @@ class _ResultScreenState extends State<ResultScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final filteredResults = results.where((game){
-    final title=game['title'].toString().toLowerCase();
-    return title.contains(searchQuery);
+    // Computed list based on search and filter
+    final filteredResults = allResults.where((game) {
+      final titleMatch = game.drawName.toLowerCase().contains(searchQuery.toLowerCase());
+      final filterMatch = selectedFilter == "All Draws" || game.gameTypeName == selectedFilter;
+      return titleMatch && filterMatch;
     }).toList();
 
     return Scaffold(
       body: Stack(
         children: [
           Container(
-            decoration: const BoxDecoration(
-              gradient: RadialGradient(
-                center: Alignment.topCenter,
-                radius: 1.2,
-                colors: [Color(0xFF0A0F0D), Color(0xFF0A0F0D)],
-              ),
-            ),
+            decoration: const BoxDecoration(color: Color(0xFF0A0F0D)),
             child: SafeArea(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(height: 15),
-                    CustomDrawer(onMenuPressed: toggleMenu),
-                    const SizedBox(height: 30),
-
-                    // Header Banner
-                    _builderHeaderBanner(),
-                    const SizedBox(height: 30),
-
-                    // Search Bar
-                    _buildSearchBar(),
-                    const SizedBox(height: 30),
-
-                    if (filteredResults.isNotEmpty)
-                      ...filteredResults.map((data) => _buildResultCard(data)),
-
-                    if (filteredResults.isEmpty)
-                      const Center(
-                        child: Padding(
-                          padding: EdgeInsets.only(top: 50),
-                          child: Text(
-                            "No games found",
-                            style: TextStyle(color: Colors.white54, fontSize: 16),
-                          ),
-                        ),
+              child: RefreshIndicator(
+                onRefresh: fetchDrawResults,
+                color: AppColors.primary,
+                child: SingleChildScrollView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                        child: CustomDrawer(onMenuPressed: toggleMenu),
                       ),
-                    const SizedBox(height: 40),
-                    const AppFooter(),
-                    const SizedBox(height: 40),
-                  ],
+
+                      // Header Section
+                      _buildHeader(),
+
+                      const SizedBox(height: 24),
+
+                      // Search Bar
+                      _buildSearchBar(),
+
+                      const SizedBox(height: 16),
+
+                      // Filter Buttons
+                      _buildFilterRow(),
+
+                      const SizedBox(height: 28),
+
+                      // API Content Logic
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: _buildMainContent(filteredResults),
+                      ),
+
+                      const SizedBox(height: 40),
+                      const Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 20),
+                        child: AppFooter(),
+                      ),
+                      const SizedBox(height: 40),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -159,162 +132,204 @@ class _ResultScreenState extends State<ResultScreen> {
       ),
     );
   }
- Widget _builderHeaderBanner(){
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(24),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(24),
-        color: AppColors.scaffoldBg,
-        border:Border.all(color: const Color(0xFF0A2E2A)),
-        image: const DecorationImage(image: AssetImage('assets/result.png'),
-          fit: BoxFit.cover,
-          opacity: 0.6
-        )
-      ),
-      child:const Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(height: 8),
-          Text("Lottery\nResults", style: TextStyle(color: Colors.white,fontSize: 34,fontWeight: FontWeight.bold,)),
-          SizedBox(height: 8),
-          Text("View past draw results and \nwinning numbers",style: TextStyle(color:Colors.white70,fontSize:20)),
-        ],
-      )
-    );
- }
 
-  Widget _buildSearchBar() {
-    return TextField(
-      onChanged: (value) => setState(() => searchQuery = value),
-      decoration: InputDecoration(
-        hintText: "Search by game name...",
-        hintStyle: const TextStyle(color: Colors.white24),
-        prefixIcon: const Icon(Icons.search, color: Colors.white24),
-        filled: true,
-        fillColor: AppColors.scaffoldBg,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: Color(0xFF0A2E2A)),
+  Widget _buildMainContent(List<DrawResult> filteredResults) {
+    if (isLoading) {
+      return const Center(
+        child: Padding(
+          padding: EdgeInsets.only(top: 50),
+          child: CircularProgressIndicator(color: AppColors.primary),
         ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: Color(0xFF0A2E2A)),
+      );
+    }
+
+    if (errorMessage != null) {
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.only(top: 50),
+          child: Text(errorMessage!, style: const TextStyle(color: Colors.redAccent)),
         ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: Color(0xFF0A2E2A), width: 2),
+      );
+    }
+
+    if (filteredResults.isEmpty) {
+      return const Center(
+        child: Padding(
+          padding: EdgeInsets.only(top: 50),
+          child: Text("No games found", style: TextStyle(color: Color(0xFF5A6B65), fontSize: 15)),
         ),
-      ),
+      );
+    }
+
+    return Column(
+      children: filteredResults.map((data) => _buildResultCard(data)).toList(),
     );
   }
 
-  Widget _buildResultCard(Map<String, dynamic> data) {
+  Widget _buildResultCard(DrawResult data) {
+    final formattedDate = DateFormat('dd MMM yyyy').format(data.drawDate);
+    final prizeAmount = "₹${NumberFormat('#,##,###').format(double.parse(data.prizePool))}";
+    final paidAmount = "₹${NumberFormat('#,##,###').format(double.parse(data.totalPrizePaid))}";
+
     return Container(
-      margin: const EdgeInsets.only(bottom: 25),
-      padding: const EdgeInsets.all(24),
+      margin: const EdgeInsets.only(bottom: 24),
+      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-       // color: const Color(0xFF051C1A), // Dark card background
-        borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: const Color(0xFF0A2E2A)),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: const Color(0xFF1A2420), width: 1),
+        color: const Color(0xFF0F1612),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-
-          // 1. TOP SECTION: Icon + (Title and Date Column)
           Row(
-            crossAxisAlignment: CrossAxisAlignment.start, // Aligns icon with top of Title
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Icon(
-                  Icons.emoji_events_outlined,
-                  color: AppColors.primary,
-                  size: 28
+              Container(
+                width: 40, height: 40,
+                decoration: BoxDecoration(
+                  color: const Color(0xFF1A2420),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: const Center(child: Icon(Icons.emoji_events_outlined, color: AppColors.primary, size: 22)),
               ),
-              const SizedBox(width: 15),
-
-              // This Column places the date exactly below the title
+              const SizedBox(width: 14),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      data.drawName.toUpperCase(),
+                      style: const TextStyle(color: Color(0xFFB8C5C0), fontSize: 11, fontWeight: FontWeight.w600, letterSpacing: 0.8),
+                    ),
+                    const SizedBox(height: 10),
+                    Text(data.drawName, style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w700)),
+                    const SizedBox(height: 10),
+                    Row(
+                      children: [
+                        const Icon(Icons.calendar_today_outlined, color: Color(0xFF5A6B65), size: 13),
+                        const SizedBox(width: 6),
+                        Text(formattedDate, style: const TextStyle(color: Color(0xFF5A6B65), fontSize: 12)),
+                      ],
+                    ),
+                    const SizedBox(height: 6),
+                    Text("Result ID: ${data.id.substring(0, 8)}...", style: const TextStyle(color: Color(0xFF3A4844), fontSize: 11)),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 24),
+          Wrap(
+            spacing: 12, runSpacing: 12,
+            children: [
+              ...data.winningNumbers.map((n) => _buildNumberBall(n.toString(), false)),
+              _buildNumberBall(data.specialNumber.toString(), true),
+            ],
+          ),
+          const SizedBox(height: 24),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    data['title'],
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 6), // Spacing between Title and Date
-                  Row(
-                    children: [
-                      const Icon(Icons.calendar_today_outlined, color: Colors.white30, size: 14),
-                      const SizedBox(width: 6),
-                      Text(
-                        data['date'],
-                        style: const TextStyle(color: Colors.white30, fontSize: 14),
-                      ),
-                    ],
-                  ),
+                  const Text("Winners", style: TextStyle(color: Color(0xFF5A6B65), fontSize: 12)),
+                  Text(data.winnersCount.toString(), style: const TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.w700)),
+                  const SizedBox(height: 12),
+                  const Text("Paid", style: TextStyle(color: Color(0xFF5A6B65), fontSize: 12)),
+                  Text(paidAmount, style: const TextStyle(color: AppColors.accent, fontSize: 14, fontWeight: FontWeight.w700)),
+                ],
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  const Text("JACKPOT", style: TextStyle(color: Color(0xFF5A6B65), fontSize: 11, fontWeight: FontWeight.w600)),
+                  const SizedBox(height: 8),
+                  Text(prizeAmount, style: const TextStyle(color: AppColors.accent, fontSize: 24, fontWeight: FontWeight.w700)),
                 ],
               ),
             ],
-          ),
-          const SizedBox(height: 35),
-
-          // 2. MIDDLE SECTION: Winning Numbers
-          Wrap(
-            spacing: 10,
-            children: [
-              ...data['numbers'].map<Widget>((n) => _ball(n.toString(), false)),
-              _ball(data['special'].toString(), true),
-            ],
-          ),
-
-          const SizedBox(height: 30),
-
-          // 3. BOTTOM SECTION: Prize and Winner Count
-          Align(
-            alignment: Alignment.bottomRight, // Aligns content to bottom right
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Text(
-                  data['prize'],
-                  style: const TextStyle(
-                    color: AppColors.accent, // Gold color for prize
-                    fontSize: 34,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                Text(
-                  "${data['winners']}",
-                  style: const TextStyle(color: Colors.white54, fontSize: 13),
-                ),
-              ],
-            ),
           ),
         ],
       ),
     );
   }
-Widget _ball(String txt,bool isSpecial){
-  return Container(
-    width: 60, height: 60,
-    decoration: BoxDecoration(
-      shape: BoxShape.circle,
-      border: Border.all(
-        color: isSpecial? Color(0xFF392D0A).withOpacity(1) : AppColors.card.withOpacity(1)),
-      boxShadow: [
-        BoxShadow(
-          color: (isSpecial ? Color(0xFF392D0A) : AppColors.card).withOpacity(0.25),
-          blurRadius: 4,
-          offset: const Offset(0, 2),
+
+  Widget _buildNumberBall(String number, bool isSpecial) {
+    return Container(
+      width: 50, height: 50,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        border: Border.all(color: isSpecial ? AppColors.accent : AppColors.primary, width: 2),
+        color: isSpecial ? const Color(0xFF2D2410) : const Color(0xFF0A2E2A),
+      ),
+      child: Center(
+        child: Text(number, style: TextStyle(color: isSpecial ? AppColors.accent : AppColors.primary, fontSize: 18, fontWeight: FontWeight.bold)),
+      ),
+    );
+  }
+
+  // UI Helpers (Extracted for cleanliness)
+  Widget _buildHeader() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(width: 20, height: 20, decoration: const BoxDecoration(shape: BoxShape.circle, color: AppColors.primary), child: const Icon(Icons.check, size: 12)),
+              const SizedBox(width: 10),
+              const Text("Latest Draw Results", style: TextStyle(color: AppColors.primary, fontSize: 13, fontWeight: FontWeight.w600)),
+            ],
+          ),
+          const SizedBox(height: 16),
+          const Text("Celebrate the Winners", style: TextStyle(color: Colors.white, fontSize: 34, fontWeight: FontWeight.bold)),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSearchBar() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: TextField(
+        onChanged: (v) => setState(() => searchQuery = v),
+        style: const TextStyle(color: Colors.white),
+        decoration: InputDecoration(
+          hintText: "Search by draw name...",
+          hintStyle: const TextStyle(color: Color(0xFF5A6B65)),
+          prefixIcon: const Icon(Icons.search, color: Color(0xFF5A6B65)),
+          filled: true, fillColor: const Color(0xFF0F1612),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
         ),
-      ],
-    ),
-    child: Center(child: Text(txt,style: TextStyle(color: isSpecial? AppColors.accent:AppColors.primary),
-      )
-    ),
-  );}
+      ),
+    );
+  }
+
+  Widget _buildFilterRow() {
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: Row(
+        children: ["All Draws", "Mega Millions", "Super Jackpot"].map((filter) {
+          final isSelected = selectedFilter == filter;
+          return GestureDetector(
+            onTap: () => setState(() => selectedFilter = filter),
+            child: Container(
+              margin: const EdgeInsets.only(right: 10),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              decoration: BoxDecoration(
+                color: isSelected ? AppColors.primary : Colors.transparent,
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(color: isSelected ? AppColors.primary : const Color(0xFF1A2420)),
+              ),
+              child: Text(filter, style: TextStyle(color: isSelected ? Colors.black : Colors.white70, fontSize: 12)),
+            ),
+          );
+        }).toList(),
+      ),
+    );
+  }
 }

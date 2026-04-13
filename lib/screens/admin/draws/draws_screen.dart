@@ -5,21 +5,16 @@ import '../drawer/drawer_menu.dart';
 
 class DrawsScreen extends StatefulWidget {
   const DrawsScreen({super.key});
-
   @override
   State<DrawsScreen> createState() => _DrawsScreenState();
 }
-
 class _DrawsScreenState extends State<DrawsScreen> {
-
   bool isMenuOpen = false;
-
   void toggleMenu() {
     setState(() {
       isMenuOpen = !isMenuOpen;
     });
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -41,7 +36,7 @@ class _DrawsScreenState extends State<DrawsScreen> {
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: SingleChildScrollView(
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  //  crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const SizedBox(height: 20),
 
@@ -69,15 +64,11 @@ class _DrawsScreenState extends State<DrawsScreen> {
                           ),
                         ],
                       ),
-
-                      
                       const SizedBox(height: 20),
                      Row(
                        children: [
                          Expanded(child: DetailsCard(svgIcon: "🎰", value: "0", title: "Live Draws", textColor: Color(0xFF16A24A)),),
-
                          const SizedBox(width: 10),
-
                          Expanded(child: DetailsCard(svgIcon: "⏳", value: "0", title: "Scheduled", textColor: Color(0xFF1E40AE)),)
                        ],
                      ),
