@@ -3,12 +3,17 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart'; // Add this
 import 'package:lottery_app/providers/wallet_provider.dart'; // Add your path
 
-class UserwalletDetails extends StatelessWidget {
+class UserwalletDetails extends StatefulWidget {
   const UserwalletDetails({super.key});
 
   @override
+  State<UserwalletDetails> createState() => _UserwalletDetailsState();
+}
+
+class _UserwalletDetailsState extends State<UserwalletDetails> {
+  @override
   Widget build(BuildContext context) {
-    // 📻 Listen to the WalletProvider
+
     final wallet = context.watch<WalletProvider>();
 
     return Column(

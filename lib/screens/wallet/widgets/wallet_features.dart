@@ -44,7 +44,7 @@ class FeatureCard extends StatelessWidget {
   final String svg;
   final String title;
   final String description;
-  final VoidCallback? onTap; // Added callback for interactivity
+  final VoidCallback? onTap;
 
   const FeatureCard({
     super.key,
