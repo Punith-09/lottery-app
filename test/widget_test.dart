@@ -5,7 +5,8 @@ void main() {
   testWidgets('App loads successfully', (WidgetTester tester) async {
     await tester.pumpWidget(const MyApp());
 
-    // Check if app loads
+    await tester.pumpAndSettle();
+
     expect(find.byType(MyApp), findsOneWidget);
   });
 }
