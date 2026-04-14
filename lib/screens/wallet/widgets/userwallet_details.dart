@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:provider/provider.dart'; // Add this
-import 'package:lottery_app/providers/wallet_provider.dart'; // Add your path
+import 'package:lottery_app/services/razorpay_service.dart';
+import 'package:provider/provider.dart';
+import 'package:lottery_app/providers/wallet_provider.dart';
+import 'package:razorpay_flutter/razorpay_flutter.dart';
 
 class UserwalletDetails extends StatefulWidget {
   const UserwalletDetails({super.key});
@@ -11,9 +13,56 @@ class UserwalletDetails extends StatefulWidget {
 }
 
 class _UserwalletDetailsState extends State<UserwalletDetails> {
+  final TextEditingController amountController = TextEditingController();
+  late RazorpayService razorpayService;
+
+  @override
+  void initState() {
+    super.initState();
+
+    razorpayService = RazorpayService();
+
+    razorpayService.init(
+      onSuccess: _handlePaymentSuccess,
+      onFailure: _handlePaymentFailure,
+      onExternalWallet: _handleExternalWallet,
+    );
+  }
+
+  // ✅ PAYMENT SUCCESS
+  void _handlePaymentSuccess(PaymentSuccessResponse response) {
+    final wallet = context.read<WalletProvider>();
+
+    double amount = double.tryParse(amountController.text) ?? 0;
+
+    wallet.addBalance(amount);
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text("Payment Successful ✅")),
+    );
+  }
+
+  // ✅ PAYMENT FAILURE
+  void _handlePaymentFailure(PaymentFailureResponse response) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text("Payment Failed ❌")),
+    );
+  }
+
+  // ✅ EXTERNAL WALLET
+  void _handleExternalWallet(ExternalWalletResponse response) {
+    debugPrint("External Wallet: ${response.walletName}");
+  }
+
+  @override
+  void dispose() {
+    razorpayService.dispose();
+    amountController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-
     final wallet = context.watch<WalletProvider>();
 
     return Column(
@@ -22,9 +71,10 @@ class _UserwalletDetailsState extends State<UserwalletDetails> {
           width: double.infinity,
           padding: const EdgeInsets.all(26),
           decoration: BoxDecoration(
-              color: const Color(0xFF0D1915),
-              borderRadius: BorderRadius.circular(15), // Fixed BorderRadius
-              border: Border.all(color: const Color(0xFF1F3D32))),
+            color: const Color(0xFF0D1915),
+            borderRadius: BorderRadius.circular(15),
+            border: Border.all(color: const Color(0xFF1F3D32)),
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -32,16 +82,23 @@ class _UserwalletDetailsState extends State<UserwalletDetails> {
                 children: [
                   SvgPicture.asset(
                     "assets/wallet.svg",
-                    width: 16, height: 16,
-                    colorFilter: const ColorFilter.mode(Color(0xFF069B6C), BlendMode.srcIn),
+                    width: 16,
+                    height: 16,
+                    colorFilter: const ColorFilter.mode(
+                      Color(0xFF069B6C),
+                      BlendMode.srcIn,
+                    ),
                   ),
                   const SizedBox(width: 10),
-                  const Text("Total Balance", style: TextStyle(fontSize: 16, color: Colors.white)),
+                  const Text(
+                    "Total Balance",
+                    style: TextStyle(fontSize: 16, color: Colors.white),
+                  ),
                 ],
               ),
               const SizedBox(height: 10),
 
-              // 💰 DYNAMIC BALANCE
+              // 💰 BALANCE
               Text(
                 "₹${wallet.balance.toStringAsFixed(2)}",
                 style: const TextStyle(
@@ -50,91 +107,33 @@ class _UserwalletDetailsState extends State<UserwalletDetails> {
                   fontWeight: FontWeight.bold,
                 ),
               ),
+
               const SizedBox(height: 15),
+
               Row(
                 children: [
                   Expanded(
                     child: ElevatedButton(
                       onPressed: () {
-                        showModalBottomSheet(
-                          context: context,
-                          isScrollControlled: true,
-                          backgroundColor: Color(0xFF0D1915),
-                          shape: const RoundedRectangleBorder(
-                            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-                          ),
-                          builder: (context) {
-                            return Padding(
-                              padding: const EdgeInsets.all(20),
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Container(
-                                    width: 40,
-                                    height: 5,
-                                    decoration: BoxDecoration(
-                                      color: Colors.grey,
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                  ),
-                                  const SizedBox(height: 20),
-
-                                  Text(
-                                    "Add Money to Wallet",
-                                    style: TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-
-                                  const SizedBox(height: 20),
-                                  Text(
-                                    "Amount (Min ₹50)",
-                                    textAlign: TextAlign.start,
-                                  ),
-                                  const SizedBox(height: 10),
-                                  TextField(
-                                    keyboardType: TextInputType.number,
-                                    decoration: InputDecoration(
-                                      hintText: "₹ Enter amount",
-                                      filled: true,
-                                      fillColor: Color(0xFF1C2B26),
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(10),
-                                      ),
-                                    ),
-                                  ),
-
-                                  const SizedBox(height: 20),
-
-                                  ElevatedButton(
-                                    onPressed: () {
-                                      Navigator.pop(context);
-                                    },
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: Color(0xFF00BB7C),
-                                      minimumSize: Size(double.infinity, 50),
-                                    ),
-                                    child: Text("Proceed to Pay"),
-                                  ),
-
-                                  const SizedBox(height: 20),
-                                ],
-                              ),
-                            );
-                          },
-                        );
+                        _showAddMoneyBottomSheet(context);
                       },
                       style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF00BB7C),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                          padding: const EdgeInsets.all(15)),
+                        backgroundColor: const Color(0xFF00BB7C),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        padding: const EdgeInsets.all(15),
+                      ),
                       child: const Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Icon(Icons.add, color: Colors.black),
                           SizedBox(width: 10),
-                          Text("Add\nFunds", textAlign: TextAlign.center, style: TextStyle(color: Colors.black, fontSize: 14)),
+                          Text(
+                            "Add\nFunds",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(color: Colors.black, fontSize: 14),
+                          ),
                         ],
                       ),
                     ),
@@ -144,15 +143,26 @@ class _UserwalletDetailsState extends State<UserwalletDetails> {
                     child: ElevatedButton(
                       onPressed: () {},
                       style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF1C2B26),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                          padding: const EdgeInsets.all(20)),
+                        backgroundColor: const Color(0xFF1C2B26),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        padding: const EdgeInsets.all(20),
+                      ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          SvgPicture.asset("assets/credit-card.svg", width: 16, height: 16, color: Colors.white),
+                          SvgPicture.asset(
+                            "assets/credit-card.svg",
+                            width: 16,
+                            height: 16,
+                            color: Colors.white,
+                          ),
                           const SizedBox(width: 8),
-                          const Text("Withdraw", style: TextStyle(color: Colors.white, fontSize: 16)),
+                          const Text(
+                            "Withdraw",
+                            style: TextStyle(color: Colors.white, fontSize: 16),
+                          ),
                         ],
                       ),
                     ),
@@ -163,7 +173,6 @@ class _UserwalletDetailsState extends State<UserwalletDetails> {
           ),
         ),
 
-        // You can also add "Total Won" to your Provider later to make this dynamic too!
         const SizedBox(height: 26),
         _buildStatCard("Total won", "₹2,500.00", "assets/trending-up.svg", const Color(0xFF00D391)),
         const SizedBox(height: 26),
@@ -172,15 +181,102 @@ class _UserwalletDetailsState extends State<UserwalletDetails> {
     );
   }
 
-  // Helper to keep code clean
+  // ✅ BOTTOM SHEET METHOD (CLEAN)
+  void _showAddMoneyBottomSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: const Color(0xFF0D1915),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) {
+        return Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 40,
+                height: 5,
+                decoration: BoxDecoration(
+                  color: Colors.grey,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+              const SizedBox(height: 20),
+
+              const Text(
+                "Add Money to Wallet",
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+
+              const SizedBox(height: 20),
+
+              TextField(
+                controller: amountController,
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(
+                  hintText: "₹ Enter amount",
+                  filled: true,
+                  fillColor: const Color(0xFF1C2B26),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 20),
+
+              ElevatedButton(
+                onPressed: () {
+                  String amountText = amountController.text.trim();
+
+                  if (amountText.isEmpty) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text("Enter amount")),
+                    );
+                    return;
+                  }
+
+                  double amount = double.tryParse(amountText) ?? 0;
+
+                  if (amount < 50) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text("Minimum ₹50 required")),
+                    );
+                    return;
+                  }
+
+                  Navigator.pop(context);
+
+                  // 🚀 OPEN RAZORPAY
+                  razorpayService.openCheckout(amount);
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF00BB7C),
+                  minimumSize: const Size(double.infinity, 50),
+                ),
+                child: const Text("Proceed to Pay"),
+              ),
+
+              const SizedBox(height: 20),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   Widget _buildStatCard(String title, String value, String icon, Color color) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-          color: const Color(0xFF0D1915),
-          borderRadius: BorderRadius.circular(15),
-          border: Border.all(color: const Color(0xFF1F3D32))),
+        color: const Color(0xFF0D1915),
+        borderRadius: BorderRadius.circular(15),
+        border: Border.all(color: const Color(0xFF1F3D32)),
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -191,21 +287,14 @@ class _UserwalletDetailsState extends State<UserwalletDetails> {
               Text(title, style: TextStyle(color: color, fontSize: 16)),
             ],
           ),
-          Text(value, style: const TextStyle(fontSize: 30, color: Colors.white, fontWeight: FontWeight.bold)),
-        ],
-      ),
-    );
-  }
-
-  void _showAddFundsDialog(BuildContext context) {
-    // This is where you would integrate Razorpay
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text("Add Funds"),
-        content: const Text("Integration with Razorpay goes here."),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: const Text("Close"))
+          Text(
+            value,
+            style: const TextStyle(
+              fontSize: 30,
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
         ],
       ),
     );

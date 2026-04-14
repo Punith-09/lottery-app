@@ -1,19 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:lottery_app/providers/wallet_provider.dart';
+import 'package:provider/provider.dart';
 
 import '../../core/constants/app_constants.dart';
 
 class AppMenu extends StatelessWidget {
-
   final VoidCallback onClose;
 
-  const AppMenu({
+   const AppMenu({
     super.key,
     required this.onClose,
   });
 
+
   @override
   Widget build(BuildContext context) {
+    final wallet= context.watch<WalletProvider>();
 
     final halfHeight = MediaQuery.of(context).size.height * 0.85;
     return Align(
@@ -110,14 +113,7 @@ class AppMenu extends StatelessWidget {
                               fontWeight: FontWeight.bold
                             ),
                           ),
-                          Text(
-                            "\$1,480",
-                            style: TextStyle(
-                              color: Colors.white,
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold
-                            ),
-                          ),
+                          Text("₹${wallet.balance.toStringAsFixed(2)}")
                         ],
                       )
                     ),
