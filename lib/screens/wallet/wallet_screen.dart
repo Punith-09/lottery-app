@@ -23,26 +23,34 @@ class _WalletScreenState extends State<WalletScreen> {
   @override
   void initState() {
     super.initState();
-    // Fetch initial balance when user enters the screen
-    _fetchWalletBalance();
+    // We wait for the first frame to render BEFORE fetching data.
+    // This prevents the "Blank Screen" caused by blocking the main thread.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _fetchWalletBalance();
+    });
   }
 
-  Future<void> _fetchWalletBalance() async{
-    setState(() {
-      isLoading=true;
-    });
-    try{
+  Future<void> _fetchWalletBalance() async {
+    if (!mounted) return;
+
+    setState(() => isLoading = true);
+
+    try {
+      // Adding a tiny delay helps the UI thread "breathe"
+      await Future.delayed(const Duration(milliseconds: 100));
+
       final response = await ApiServices.getRequest("/wallet");
-      if(response!=null && response['success']==true){
-        double balance =double.parse(response['balance'].toString());
-        context.read<WalletProvider>().setBalance(balance);
+
+      if (response != null && response['success'] == true) {
+        double balance = double.parse(response['balance'].toString());
+        if (mounted) {
+          context.read<WalletProvider>().setBalance(balance);
+        }
       }
-    }catch(e){
-      debugPrint("WALLET API ERROR:$e");
-    }finally{
-      if(mounted) setState(() {
-        isLoading=false;
-      });
+    } catch (e) {
+      debugPrint("WALLET API ERROR: $e");
+    } finally {
+      if (mounted) setState(() => isLoading = false);
     }
   }
 
