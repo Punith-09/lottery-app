@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:lottery_app/providers/login_provider.dart';
 import 'package:lottery_app/providers/wallet_provider.dart';
+import 'package:lottery_app/screens/auth/Profile_screen.dart';
 import 'package:provider/provider.dart';
 
 import '../../core/constants/app_constants.dart';
@@ -17,7 +19,6 @@ class AppMenu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final wallet= context.watch<WalletProvider>();
-
     final halfHeight = MediaQuery.of(context).size.height * 0.85;
     return Align(
       alignment: Alignment.topCenter,
@@ -37,7 +38,6 @@ class AppMenu extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -117,67 +117,104 @@ class AppMenu extends StatelessWidget {
                         ],
                       )
                     ),
-                      ElevatedButton(
-
-                        style: ElevatedButton.styleFrom(
-
-                          backgroundColor: Colors.transparent,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
+                    const SizedBox(height: 10,),
+                    Consumer<AuthProvider>(builder: (context,auth,child){
+                      if(auth.isLoggedIn){
+                        return ElevatedButton.icon(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFF161D1A),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            )
                           ),
-                        ),
-                        onPressed: () {
-                          Navigator.pushNamed(context, '/dashboard');
-                        },
-                        child: const Text(
-                        "Login",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
+                          onPressed: (){
+                            Navigator.push(
+                                context,
+                              MaterialPageRoute(builder: (_)=>const ProfileScreen(),),
+                            );
+                          },
+                          icon: const Icon(Icons.person,color: Colors.white),
+                          label: Text(
+                            auth.username,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
-                        ),
-                      ),
+                        );
+                      }else{
+                        return ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.transparent,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                            ),
+                             onPressed: (){
+                              Navigator.pushNamed(context, '/login');
+                            },
+                            child: const Text(
+                              "Login",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold
+                              ),
+                            ));
+                      }
+                    }),
 
                     const SizedBox(height: 10),
+                    Consumer<AuthProvider>(
+                      builder: (context, auth, child) {
+                        return Column(
+                          children: [
+                            /// 🔐 LOGOUT BUTTON (only when logged in)
+                            if (auth.isLoggedIn)
+                              SizedBox(
+                                width: double.infinity,
+                                child: ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.red,
+                                  ),
+                                  onPressed: () {
+                                    Provider.of<AuthProvider>(context, listen: false)
+                                        .logout();
 
-                       ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF00C896),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                        ),
-                        onPressed: () {
-                          Navigator.pushNamed(context, '/signup');
-                        },
-                        child: const Text(
-                          "Sign Up",
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
+                                    Navigator.pop(context); // close drawer
+                                  },
+                                  child: const Text("Logout"),
+                                ),
+                              ),
 
-                    const SizedBox(height: 10),
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF00C896),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                      onPressed: () {
-                        Navigator.pushNamed(context, '/adminLogin');
+                            /// 🆕 SIGNUP + ADMIN (only when NOT logged in)
+                            if (!auth.isLoggedIn) ...[
+                              SizedBox(
+                                width: double.infinity,
+                                child: ElevatedButton(
+                                  onPressed: () {
+                                    // Navigate to signup
+                                  },
+                                  child: const Text("Sign Up"),
+                                ),
+                              ),
+
+                              const SizedBox(height: 10),
+
+                              SizedBox(
+                                width: double.infinity,
+                                child: ElevatedButton(
+                                  onPressed: () {
+                                    // Navigate to admin login
+                                  },
+                                  child: const Text("Admin Login"),
+                                ),
+                              ),
+                            ],
+                          ],
+                        );
                       },
-                      child: const Text(
-                        "Admin Login",
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
+                    )
+
                     // ),
                   ],
                 )
