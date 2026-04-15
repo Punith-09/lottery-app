@@ -91,7 +91,7 @@ class _WalletScreenState extends State<WalletScreen> {
                       isLoading
                           ? const Center(child: CircularProgressIndicator())
                           : const UserwalletDetails(),
-                      // const UserwalletDetails(),
+                     // const UserwalletDetails(),
                       const SizedBox(height:40),
                       const WalletFeatures(),
                       const SizedBox(height: 80),
