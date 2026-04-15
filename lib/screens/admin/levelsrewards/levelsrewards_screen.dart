@@ -127,7 +127,7 @@ class _LevelsScreenState extends State<LevelsRewardsScreen> {
                                       )
                                   ),
                                   child: Text(
-                                    "+ Add Level Pool",
+                                    "+ Create Game",
                                     style: TextStyle(
                                         color: Color(0xFFFFFFFF)
                                     ),
