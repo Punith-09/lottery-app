@@ -36,7 +36,9 @@ class _LoginScreenState extends State<LoginScreen> {
       String username = user['name']?? emailController.text;
       final authProvider=Provider.of<AuthProvider>(context,listen: false);
       authProvider.login(username: username,
-        email: emailController.text,);
+        email: emailController.text,
+        role: user['role'],
+      );
       print("USERNAME STORED: $username");
 
      // String token = response['token'] ?? "";
