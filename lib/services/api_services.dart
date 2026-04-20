@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 class ApiServices {
   // 👉 Replace this with your base URL
   static const String baseUrl = "http://10.0.2.2:10000/api";
+  // static const String baseUrl = " https://pro-recipe-heather-cheats.trycloudflare.com/api";
 
   // Common headers
   static Map<String, String> get _headers => {
@@ -11,7 +12,7 @@ class ApiServices {
     "Accept": "application/json",
   };
 
-  // 🔹 GET Request
+
   static Future<dynamic> getRequest(String endpoint) async {
     final url = Uri.parse("$baseUrl$endpoint");
 
@@ -23,7 +24,7 @@ class ApiServices {
     }
   }
 
-  // 🔹 POST Request
+
   static Future<dynamic> postRequest(
       String endpoint, Map<String, dynamic> body) async {
     final url = Uri.parse("$baseUrl$endpoint");

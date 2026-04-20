@@ -192,7 +192,7 @@ class AppMenu extends StatelessWidget {
                                 width: double.infinity,
                                 child: ElevatedButton(
                                   onPressed: () {
-                                    // Navigate to signup
+                                    Navigator.pushNamed(context, '/signup');
                                   },
                                   child: const Text("Sign Up"),
                                 ),
@@ -204,7 +204,7 @@ class AppMenu extends StatelessWidget {
                                 width: double.infinity,
                                 child: ElevatedButton(
                                   onPressed: () {
-                                    // Navigate to admin login
+                                    Navigator.pushNamed(context, "/adminLogin");
                                   },
                                   child: const Text("Admin Login"),
                                 ),
