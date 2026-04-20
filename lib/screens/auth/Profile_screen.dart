@@ -58,7 +58,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         {
           "username": usernameController.text,
           "email": emailController.text,
-          "password": passwordController.text, // optional
+          "password": passwordController.text,
           "role": roleValue,
         },
       );
@@ -146,20 +146,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ),
 
 
-                          Row(
-                            children: [
-                              if (!isEditing)
-                                ElevatedButton(
-                                  onPressed: () {
-                                    setState(() => isEditing = true);
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.blue,
-                                  ),
-                                  child: const Text("Edit"),
-                                ),
-                            ],
-                          ),
+                          // Row(
+                          //   children: [
+                          //     if (!isEditing)
+                          //       ElevatedButton(
+                          //         onPressed: () {
+                          //           setState(() => isEditing = true);
+                          //         },
+                          //         style: ElevatedButton.styleFrom(
+                          //           backgroundColor: Colors.blue,
+                          //         ),
+                          //         child: const Text("Edit"),
+                          //       ),
+                          //   ],
+                          // ),
                         ],
                       ),
 
@@ -202,6 +202,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
 
                       const SizedBox(height: 20),
+
+                      Row(
+                        // crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          if (!isEditing)
+                            ElevatedButton(
+
+                              onPressed: () {
+                                setState(() => isEditing = true);
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.blue,
+                              ),
+                              child: const Text("Edit"),
+                            ),
+                        ],
+                      ),
+
                       if (isEditing) ...[
                         ElevatedButton(
                           onPressed: updateProfile,

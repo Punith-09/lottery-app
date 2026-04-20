@@ -87,7 +87,7 @@ class DrawerMenu extends StatelessWidget {
                   height: 60,
                   child: ElevatedButton(
                     onPressed: (){
-                      Navigator.pushNamed(context, '/adminLogin');
+                      Navigator.pushNamed(context, '/');
                     },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.black,
