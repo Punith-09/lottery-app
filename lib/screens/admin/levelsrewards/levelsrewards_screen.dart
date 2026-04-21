@@ -17,8 +17,10 @@ class _LevelsScreenState extends State<LevelsRewardsScreen> {
   Map<String,dynamic> stats={};
   bool isMenuOpen = false;
   bool isCreatingGame = false;
+  bool isLoadingGames=false;
 
   List<dynamic> games = [];
+  List<dynamic> levelGames=[];
 
   String? selectedGameId;
 
@@ -34,6 +36,7 @@ class _LevelsScreenState extends State<LevelsRewardsScreen> {
     super.initState();
     fetchStats();
     fetchGames();
+    fetchLevelPools();
   }
 
 
@@ -41,6 +44,21 @@ class _LevelsScreenState extends State<LevelsRewardsScreen> {
     setState(() {
       isMenuOpen = !isMenuOpen;
     });
+  }
+
+  Future<void> fetchLevelPools() async {
+    try {
+      setState(() => isLoadingGames = true);
+      // API: api/admin/levels
+      final res = await ApiServices.getRequest("/admin/levels");
+      setState(() {
+        levelGames = res;
+        isLoadingGames = false;
+      });
+    } catch (e) {
+      setState(() => isLoadingGames = false);
+      debugPrint("Level Pools fetch error: $e");
+    }
   }
 
   Future<void> fetchGames() async {
@@ -269,7 +287,9 @@ class _LevelsScreenState extends State<LevelsRewardsScreen> {
                       ),
                       const SizedBox(height: 40),
 
-                      ActiveLevel(),
+                      ActiveLevel(
+                        levelGames: levelGames,
+                        isLoading: isLoadingGames, ),
 
                       const SizedBox(height: 40),
                       PointsConfiguration(),
@@ -524,7 +544,7 @@ class _LevelsScreenState extends State<LevelsRewardsScreen> {
                       value: selectedGameId,
                       items: games.map<DropdownMenuItem<String>>((game) {
                         return DropdownMenuItem(
-                          
+
                           value: game["id"].toString(),
                           child: Text("${game["name"]} (₹${game["entryFee"]})"),
                         );
