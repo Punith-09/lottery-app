@@ -63,7 +63,7 @@ class TicketWidget extends StatelessWidget {
                               child: Text(ticket["status"]!)),
                           SizedBox(
                               width: 120,
-                              child: Text(ticket["date"]!)),
+                              child: Text(ticket["date"]?? "")),
                         ],
                       ),
                     );

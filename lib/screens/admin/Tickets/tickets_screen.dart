@@ -3,6 +3,7 @@ import 'package:lottery_app/screens/admin/drawer/admin_drawer.dart';
 import 'package:lottery_app/screens/admin/drawer/drawer_menu.dart';
 import 'package:lottery_app/screens/admin/Tickets/widgets/search_filter.dart';
 import 'package:lottery_app/screens/admin/Tickets/widgets/ticket_widget.dart';
+import 'package:lottery_app/services/api_services.dart';
 
 class TicketsScreen extends StatefulWidget {
   const TicketsScreen({super.key});
@@ -13,42 +14,110 @@ class TicketsScreen extends StatefulWidget {
 
 class _TicketsScreenState extends State<TicketsScreen> {
   bool isMenuOpen = false;
+  bool isLoading = true; // ✅ FIXED (should be true initially)
 
   final TextEditingController searchController = TextEditingController();
 
-  List<Map<String, String>> tickets = [
-    {
-      "ticket": "12345",
-      "numbers": "1,2,3,4",
-      "user": "Lokesh",
-      "price": "₹100",
-      "status": "Active",
-      "date": "2026-04-07"
-    },
-    {
-      "ticket": "67890",
-      "numbers": "5,6,7,8",
-      "user": "Ravi",
-      "price": "₹200",
-      "status": "Pending",
-      "date": "2026-04-06"
-    },
-  ];
-
+  List<Map<String, String>> tickets = [];
   List<Map<String, String>> filteredTickets = [];
 
   @override
   void initState() {
     super.initState();
-    filteredTickets = tickets;
+    fetchTickets();
   }
 
+  /// 🔥 FETCH API DATA
+  Future<void> fetchTickets() async {
+    try {
+      final ticketsRes = await ApiServices.getRequest("/tickets");
+      final usersRes = await ApiServices.getRequest("/users");
+
+      final List ticketsData = ticketsRes["data"] ?? ticketsRes;
+      final List usersData = usersRes["data"] ?? usersRes;
+      Map userMap = {
+        for (var user in usersData)
+          user["id"] ?? user["_id"]: user["name"] ?? user["username"]
+      };
+      print(ticketsData);
+
+      final loadedTickets = ticketsData.map<Map<String, String>>((ticket) {
+        /// ✅ Ticket Number (handle multiple keys)
+        String ticketNumber =
+            ticket["ticketNumber"]?.toString() ??
+                ticket["ticket_number"]?.toString() ??
+                ticket["ticket"]?.toString() ??
+                "";
+
+        /// ✅ Picked Numbers Fix (handles List or String)
+        String numbers = "";
+        if (ticket["pickedNumbers"] is List) {
+          numbers = (ticket["pickedNumbers"] as List)
+              .map((e) => e is Map ? e["number"].toString() : e.toString())
+              .join(", ");
+        } else {
+          numbers = ticket["pickedNumbers"]?.toString() ??
+              ticket["picked_numbers"]?.toString() ??
+              "";
+        }
+
+        /// ✅ User Fix
+        String userName =
+            userMap[ticket["userId"]] ??
+                userMap[ticket["user_id"]] ??
+                ticket["userName"] ??
+                ticket["user_name"] ??
+                "Unknown";
+
+        /// ✅ Date Fix
+        /// ✅ FIXED DATE LOGIC
+        String date = "";
+
+        if (ticket["purchased_at"] != null) {
+          try {
+            DateTime parsedDate = DateTime.parse(ticket["purchased_at"]);
+            date =
+            "${parsedDate.day.toString().padLeft(2, '0')}/"
+                "${parsedDate.month.toString().padLeft(2, '0')}/"
+                "${parsedDate.year}";
+          } catch (e) {
+            date = ticket["purchased_at"].toString();
+          }
+        }
+
+
+
+        return {
+          "ticket": ticketNumber,
+          "numbers": numbers,
+          "user": userName,
+          "price": "₹${ticket["price"] ?? 0}",
+          "status": ticket["status"]?.toString() ?? "",
+          "date": date,
+        };
+      }).toList();
+
+      setState(() {
+        tickets = loadedTickets;
+        filteredTickets = loadedTickets;
+        isLoading = false;
+      });
+    } catch (e) {
+      print("Error fetching tickets: $e");
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
+  /// 🔹 Drawer toggle
   void toggleMenu() {
     setState(() {
       isMenuOpen = !isMenuOpen;
     });
   }
 
+  /// 🔹 Search filter
   void filterTickets(String query) {
     setState(() {
       filteredTickets = tickets.where((ticket) {
@@ -85,11 +154,9 @@ class _TicketsScreenState extends State<TicketsScreen> {
                   children: [
                     const SizedBox(height: 20),
 
-
                     AdminDrawer(onMenuPressed: toggleMenu),
 
                     const SizedBox(height: 20),
-
 
                     Column(
                       children: const [
@@ -114,7 +181,6 @@ class _TicketsScreenState extends State<TicketsScreen> {
 
                     const SizedBox(height: 20),
 
-
                     SearchFilter(
                       controller: searchController,
                       onChanged: filterTickets,
@@ -123,21 +189,21 @@ class _TicketsScreenState extends State<TicketsScreen> {
 
                     const SizedBox(height: 20),
 
-
+                    /// ✅ LOADER + DATA
                     Expanded(
-                      child:
-                      TicketWidget(
+                      child: isLoading
+                          ? const Center(child: CircularProgressIndicator())
+                          : TicketWidget(
                         tickets: filteredTickets,
                       ),
                     ),
-                    const SizedBox(height: 20),
 
+                    const SizedBox(height: 20),
                   ],
                 ),
               ),
             ),
           ),
-
 
           if (isMenuOpen)
             GestureDetector(
@@ -147,7 +213,6 @@ class _TicketsScreenState extends State<TicketsScreen> {
               ),
             ),
 
-          /// 🔹 DRAWER
           if (isMenuOpen)
             DrawerMenu(
               onClose: toggleMenu,
