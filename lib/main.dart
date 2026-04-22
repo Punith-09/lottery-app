@@ -21,10 +21,13 @@ import 'package:lottery_app/screens/how_to_play/how_to_play_screen.dart';
 import 'package:lottery_app/screens/levels/levels_screen.dart';
 import 'package:lottery_app/screens/results/results_screen.dart';
 import 'package:lottery_app/screens/wallet/wallet_screen.dart';
+import 'package:lottery_app/services/api_services.dart';
 import 'package:provider/provider.dart';
 import 'core/theme/app_theme.dart';
 
-void main() {
+void main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+  await ApiServices.loadCookie();
   runApp(
     MultiProvider(
       providers: [

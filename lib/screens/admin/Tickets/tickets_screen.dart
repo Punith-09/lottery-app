@@ -14,7 +14,7 @@ class TicketsScreen extends StatefulWidget {
 
 class _TicketsScreenState extends State<TicketsScreen> {
   bool isMenuOpen = false;
-  bool isLoading = true; // ✅ FIXED (should be true initially)
+  bool isLoading = true;
 
   final TextEditingController searchController = TextEditingController();
 

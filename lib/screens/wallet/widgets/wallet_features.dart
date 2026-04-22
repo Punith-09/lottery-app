@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:lottery_app/screens/wallet/transactions_screen.dart';
 
 class WalletFeatures extends StatelessWidget {
   const WalletFeatures({super.key});
@@ -33,7 +34,9 @@ class WalletFeatures extends StatelessWidget {
           svg: "assets/clock.svg",
           title: "Transaction History",
           description: "View all transactions",
-          onTap: () => print("Navigate to History"),
+          onTap : (){
+            Navigator.push(context, MaterialPageRoute(builder: (_)=>const TransactionsScreen()));
+          }
         ),
       ],
     );
