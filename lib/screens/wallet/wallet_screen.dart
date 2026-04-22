@@ -36,19 +36,35 @@ class _WalletScreenState extends State<WalletScreen> {
     setState(() => isLoading = true);
 
     try {
-      // Adding a tiny delay helps the UI thread "breathe"
       await Future.delayed(const Duration(milliseconds: 100));
 
       final response = await ApiServices.getRequest("/wallet");
 
-      if (response != null && response['success'] == true) {
-        double balance = double.parse(response['balance'].toString());
-        if (mounted) {
-          context.read<WalletProvider>().setBalance(balance);
+      print("WALLET RESPONSE: $response");
+
+      if (response is Map<String, dynamic>) {
+        if (response['success'] == true) {
+          double balance =
+              double.tryParse(response['balance']?.toString() ?? '') ?? 0.0;
+
+          if (mounted) {
+            context.read<WalletProvider>().setBalance(balance);
+          }
+        } else {
+          // 🔥 Handle backend error properly
+          debugPrint("Wallet Error: ${response['message']}");
+
+          if (mounted) {
+            context.read<WalletProvider>().setBalance(0.0);
+          }
         }
       }
     } catch (e) {
       debugPrint("WALLET API ERROR: $e");
+
+      if (mounted) {
+        context.read<WalletProvider>().setBalance(0.0);
+      }
     } finally {
       if (mounted) setState(() => isLoading = false);
     }
