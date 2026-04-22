@@ -9,7 +9,16 @@ import 'package:lottery_app/services/api_services.dart';
 import '../drawer/app_menu.dart';
 
 class WalletScreen extends StatefulWidget {
-  const WalletScreen({super.key});
+  final int? amount;
+  final String? poolId;
+  final String? from;
+
+  const WalletScreen({
+    super.key,
+    this.amount,
+    this.poolId,
+    this.from,
+  });
 
   @override
   State<WalletScreen> createState() => _WalletScreenState();
@@ -23,8 +32,6 @@ class _WalletScreenState extends State<WalletScreen> {
   @override
   void initState() {
     super.initState();
-    // We wait for the first frame to render BEFORE fetching data.
-    // This prevents the "Blank Screen" caused by blocking the main thread.
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _fetchWalletBalance();
     });
@@ -51,6 +58,37 @@ class _WalletScreenState extends State<WalletScreen> {
       debugPrint("WALLET API ERROR: $e");
     } finally {
       if (mounted) setState(() => isLoading = false);
+    }
+  }
+
+  Future<void> _handleJoinPayment() async {
+    if (widget.poolId == null) return;
+
+    setState(() => isLoading = true);
+
+    try {
+      final res = await ApiServices.postRequest(
+        "/levels/join",
+        {
+          "poolId": widget.poolId,
+        },
+      );
+
+      if (res != null && res['success'] == true) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Joined successfully")),
+        );
+
+        Navigator.pop(context);
+      } else {
+        throw Exception(res?['error'] ?? "Join failed");
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Error: $e")),
+      );
+    } finally {
+      setState(() => isLoading = false);
     }
   }
 
@@ -86,7 +124,57 @@ class _WalletScreenState extends State<WalletScreen> {
                       const SizedBox(height: 20),
 
                       CustomDrawer(onMenuPressed: toggleMenu,),
+                      const SizedBox(height: 20),
+                    if (widget.amount != null) ...[
+              Container(
+              margin: const EdgeInsets.only(bottom: 20),
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Colors.amber.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: Colors.amber),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    "Complete Your Entry",
+                    style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold,fontSize: 20),
+                  ),
+                  const SizedBox(height: 6),
+                  Text(
+                    "You are joining a Level Game. Please complete the payment of ₹${widget.amount}.",
+                    style: const TextStyle(color: Colors.grey),
+                  ),
+                  const SizedBox(height: 12),
 
+                  Row(
+                    children: [
+                      Expanded(
+                        child: ElevatedButton(
+                          onPressed: _handleJoinPayment,
+                          style:ElevatedButton.styleFrom(
+                            backgroundColor: Color(0xFFEEB000)
+                          ),
+                          child: const Text("PAY NOW"),
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: OutlinedButton(
+                          onPressed: () => Navigator.pop(context),
+                          style: OutlinedButton.styleFrom(
+                            backgroundColor: Color(0xFF2F2E18),
+                          ),
+                          child: const Text("Cancel",style: TextStyle(color: Color(0xFFFFFFFF)),),
+                        ),
+                      ),
+                    ],
+                  )
+                ],
+              ),
+            )
+              ],
                       const SizedBox(height: 20),
                       isLoading
                           ? const Center(child: CircularProgressIndicator())
