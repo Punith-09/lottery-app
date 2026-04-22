@@ -203,8 +203,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
                       const SizedBox(height: 20),
 
-                      Row(
-                        // crossAxisAlignment: CrossAxisAlignment.stretch,
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
                           if (!isEditing)
                             ElevatedButton(
@@ -215,30 +215,58 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.blue,
                               ),
-                              child: const Text("Edit"),
+                              child: const Text(
+                                  "Edit",
+                                style: TextStyle(
+                                  color: Color(0xFFFFFFFF),
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18
+                                ),
+                              ),
                             ),
                         ],
                       ),
 
-                      if (isEditing) ...[
-                        ElevatedButton(
-                          onPressed: updateProfile,
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.green,
-                          ),
-                          child: const Text("Update"),
-                        ),
-                        ElevatedButton(
-                          onPressed: () {
-                            setState(() => isEditing = false);
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.grey,
-                          ),
-                          child: const Text("Cancel"),
-                        ),
-                        const SizedBox(width: 10),
-                      ],
+
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          if (isEditing) ...[
+                            ElevatedButton(
+                              onPressed: updateProfile,
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.green,
+                              ),
+                              child: const Text(
+                                  "Update",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+                            ElevatedButton(
+                              onPressed: () {
+                                setState(() => isEditing = false);
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.grey,
+                              ),
+                              child: const Text(
+                                  "Cancel",
+                                style: TextStyle(
+                                    color: Color(0xFFFFFFFF),
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 10),
+                          ],
+                        ],
+                      ),
+
 
                       const SizedBox(height: 80),
 

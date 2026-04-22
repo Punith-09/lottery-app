@@ -1,363 +1,7 @@
-// import 'dart:convert';
-// import 'package:flutter/material.dart';
-// import 'package:http/http.dart' as http;
-//
-// class LevelGameSection extends StatefulWidget {
-//   const LevelGameSection({super.key});
-//
-//   @override
-//   State<LevelGameSection> createState() => _LevelGameSectionState();
-// }
-//
-// class _LevelGameSectionState extends State<LevelGameSection> {
-//   final String BASE_URL = "http://localhost:10000";
-//
-//   List<dynamic> games = [];
-//   String? activeGameId;
-//
-//   List<dynamic> gameLevels = [];
-//   Map<String, dynamic> wallet = {
-//     "available": 0,
-//     "locked": 0,
-//   };
-//
-//   bool loading = true;
-//
-//   @override
-//   void initState() {
-//     super.initState();
-//     fetchGames();
-//   }
-//
-//   /* ================= FETCH ================= */
-//
-//   Future<void> fetchGames() async {
-//     try {
-//       final res = await http.get(Uri.parse("$BASE_URL/api/level-games"));
-//       final data = jsonDecode(res.body);
-//
-//       setState(() {
-//         games = data;
-//         if (games.isNotEmpty) {
-//           activeGameId = games[0]['id'];
-//         }
-//       });
-//
-//       fetchLevels();
-//     } catch (e) {
-//       print("Error fetching games: $e");
-//     }
-//   }
-//
-//   Future<void> fetchLevels() async {
-//     if (activeGameId == null) return;
-//
-//     setState(() => loading = true);
-//
-//     try {
-//       final levelsRes = await http.get(
-//         Uri.parse("$BASE_URL/api/levels?levelGameId=$activeGameId"),
-//       );
-//
-//       final walletRes =
-//       await http.get(Uri.parse("$BASE_URL/api/wallet"));
-//
-//       setState(() {
-//         gameLevels = jsonDecode(levelsRes.body);
-//         wallet = jsonDecode(walletRes.body);
-//       });
-//     } catch (e) {
-//       print("Error fetching levels: $e");
-//     }
-//
-//     setState(() => loading = false);
-//   }
-//
-//   /* ================= LOGIC ================= */
-//
-//   bool isLevelUnlocked(int levelNum, dynamic currentPool) {
-//     if (levelNum <= 2) return true;
-//
-//     final prevPool = gameLevels.cast<Map<String, dynamic>?>().firstWhere(
-//           (p) => p?['level'] == levelNum - 2,
-//       orElse: () => null,
-//     );
-//
-//     if (prevPool != null && prevPool['status'] == 'completed') {
-//       return true;
-//     }
-//
-//     if (currentPool != null && prevPool == null) {
-//       return true;
-//     }
-//
-//     return false;
-//   }
-//
-//   /* ================= UI ================= */
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Column(
-//       crossAxisAlignment: CrossAxisAlignment.start,
-//       children: [
-//         /// HEADER
-//         // Row(
-//         //   children: const [
-//         //     Icon(Icons.sports_esports,
-//         //         color: Colors.amber, size: 32),
-//         //     SizedBox(width: 10),
-//         //     Column(
-//         //       crossAxisAlignment: CrossAxisAlignment.start,
-//         //       children: [
-//         //         Text(
-//         //           "Level Game",
-//         //           style: TextStyle(
-//         //               fontSize: 24,
-//         //               color: Colors.white,
-//         //               fontWeight: FontWeight.bold),
-//         //         ),
-//         //         Text(
-//         //           "Join pools and earn rewards",
-//         //           style: TextStyle(color: Colors.grey),
-//         //         ),
-//         //       ],
-//         //     )
-//         //   ],
-//         // ),
-//
-//         // const SizedBox(height: 20),
-//
-//         /// WALLET
-//         // Container(
-//         //   padding: const EdgeInsets.all(12),
-//         //   decoration: BoxDecoration(
-//         //     color: const Color(0xFF111827),
-//         //     borderRadius: BorderRadius.circular(12),
-//         //   ),
-//         //   child: Row(
-//         //     mainAxisAlignment:
-//         //     MainAxisAlignment.spaceBetween,
-//         //     children: [
-//         //       Column(
-//         //         crossAxisAlignment:
-//         //         CrossAxisAlignment.start,
-//         //         children: [
-//         //           const Text("Available",
-//         //               style:
-//         //               TextStyle(color: Colors.grey, fontSize: 12)),
-//         //           Text("₹${wallet['available']}",
-//         //               style: const TextStyle(
-//         //                   color: Colors.green,
-//         //                   fontWeight: FontWeight.bold)),
-//         //         ],
-//         //       ),
-//         //       Column(
-//         //         crossAxisAlignment:
-//         //         CrossAxisAlignment.start,
-//         //         children: [
-//         //           const Text("Locked",
-//         //               style:
-//         //               TextStyle(color: Colors.grey, fontSize: 12)),
-//         //           Text("₹${wallet['locked']}",
-//         //               style: const TextStyle(
-//         //                   color: Colors.grey,
-//         //                   fontWeight: FontWeight.bold)),
-//         //         ],
-//         //       ),
-//         //       ElevatedButton(
-//         //         onPressed: () {},
-//         //         style: ElevatedButton.styleFrom(
-//         //             backgroundColor: Colors.amber),
-//         //         child: const Text("Withdraw",
-//         //             style: TextStyle(color: Colors.black)),
-//         //       )
-//         //     ],
-//         //   ),
-//         // ),
-//
-//         const SizedBox(height: 20),
-//
-//         /// DROPDOWN
-//         Container(
-//           padding: const EdgeInsets.symmetric(horizontal: 12),
-//           decoration: BoxDecoration(
-//             color: const Color(0xFF111827),
-//             borderRadius: BorderRadius.circular(12),
-//           ),
-//           child: DropdownButtonHideUnderline(
-//             child: DropdownButton<String>(
-//               dropdownColor: const Color(0xFF111827),
-//               value: activeGameId,
-//               hint: const Text("Select Game",
-//                   style: TextStyle(color: Colors.white)),
-//               icon: const Icon(Icons.arrow_drop_down,
-//                   color: Colors.white),
-//               items: games.map((game) {
-//                 return DropdownMenuItem<String>(
-//                   value: game['id'],
-//                   child: Text(
-//                     game['name'],
-//                     style: const TextStyle(color: Colors.white),
-//                   ),
-//                 );
-//               }).toList(),
-//               onChanged: (value) {
-//                 setState(() {
-//                   activeGameId = value;
-//                 });
-//                 fetchLevels();
-//               },
-//             ),
-//           ),
-//         ),
-//
-//         const SizedBox(height: 20),
-//
-//         /// GRID
-//         loading
-//             ? const Center(child: CircularProgressIndicator())
-//             : GridView.builder(
-//           shrinkWrap: true,
-//           physics: const NeverScrollableScrollPhysics(),
-//           itemCount: 10,
-//           gridDelegate:
-//           const SliverGridDelegateWithFixedCrossAxisCount(
-//             crossAxisCount: 2,
-//             crossAxisSpacing: 12,
-//             mainAxisSpacing: 12,
-//             childAspectRatio: 0.75,
-//           ),
-//           itemBuilder: (context, index) {
-//             final lvlNum = index + 1;
-//
-//             final pool = gameLevels
-//                 .cast<Map<String, dynamic>?>()
-//                 .firstWhere(
-//                   (p) => p?['level'] == lvlNum,
-//               orElse: () => null,
-//             );
-//
-//             final unlocked =
-//             isLevelUnlocked(lvlNum, pool);
-//
-//             final currentUsers =
-//                 pool?['currentUsers'] ?? 0;
-//             final requiredUsers =
-//                 pool?['requiredUsers'] ?? (lvlNum * 4);
-//
-//             final entryFee = 100;
-//             final reward = entryFee * 2;
-//
-//             return LevelCard(
-//               level: lvlNum,
-//               unlocked: unlocked,
-//               currentUsers: currentUsers,
-//               requiredUsers: requiredUsers,
-//               reward: reward,
-//             );
-//           },
-//         ),
-//       ],
-//     );
-//   }
-// }
-//
-// /* ================= CARD ================= */
-//
-// class LevelCard extends StatelessWidget {
-//   final int level;
-//   final bool unlocked;
-//   final int currentUsers;
-//   final int requiredUsers;
-//   final int reward;
-//
-//   const LevelCard({
-//     super.key,
-//     required this.level,
-//     required this.unlocked,
-//     required this.currentUsers,
-//     required this.requiredUsers,
-//     required this.reward,
-//   });
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Stack(
-//       children: [
-//         Container(
-//           padding: const EdgeInsets.all(14),
-//           decoration: BoxDecoration(
-//             color: unlocked
-//                 ? const Color(0xFF111827)
-//                 : Colors.black26,
-//             borderRadius: BorderRadius.circular(16),
-//           ),
-//           child: Column(
-//             crossAxisAlignment:
-//             CrossAxisAlignment.start,
-//             children: [
-//               Row(
-//                 mainAxisAlignment:
-//                 MainAxisAlignment.spaceBetween,
-//                 children: [
-//                   Text("Level $level",
-//                       style:
-//                       const TextStyle(color: Colors.grey)),
-//                   Icon(
-//                     unlocked
-//                         ? Icons.lock_open
-//                         : Icons.lock,
-//                     size: 16,
-//                     color: unlocked
-//                         ? Colors.green
-//                         : Colors.red,
-//                   ),
-//                 ],
-//               ),
-//               const SizedBox(height: 10),
-//               Text("$currentUsers/$requiredUsers",
-//                   style: const TextStyle(
-//                       color: Colors.white,
-//                       fontWeight: FontWeight.bold)),
-//               const SizedBox(height: 5),
-//               LinearProgressIndicator(
-//                 value: currentUsers / requiredUsers,
-//                 color: Colors.amber,
-//                 backgroundColor: Colors.grey.shade800,
-//               ),
-//               const SizedBox(height: 10),
-//               const Text("Reward",
-//                   style: TextStyle(color: Colors.grey)),
-//               Text("₹$reward",
-//                   style: const TextStyle(
-//                       color: Colors.amber,
-//                       fontWeight: FontWeight.bold)),
-//               const Spacer(),
-//               ElevatedButton(
-//                 onPressed: unlocked ? () {} : null,
-//                 child: Text(unlocked ? "JOIN" : "LOCKED"),
-//               )
-//             ],
-//           ),
-//         ),
-//         if (!unlocked)
-//           Positioned.fill(
-//             child: Container(
-//               decoration: BoxDecoration(
-//                 color: Colors.black.withOpacity(0.6),
-//                 borderRadius: BorderRadius.circular(16),
-//               ),
-//               child: const Icon(Icons.lock, color: Colors.white54),
-//             ),
-//           )
-//       ],
-//     );
-//   }
-// }
-
 import 'package:flutter/material.dart';
 import 'package:lottery_app/services/api_services.dart';
+
+import '../../wallet/wallet_screen.dart';
 
 class LevelGameSection extends StatefulWidget {
   const LevelGameSection({super.key});
@@ -371,6 +15,7 @@ class _LevelGameSectionState extends State<LevelGameSection> {
   String? activeGameId;
 
   List<dynamic> gameLevels = [];
+
   Map<String, dynamic> wallet = {
     "available": 0,
     "locked": 0,
@@ -390,31 +35,34 @@ class _LevelGameSectionState extends State<LevelGameSection> {
     try {
       final response = await ApiServices.getRequest("/level-games");
 
-      debugPrint("LEVEL GAMES RESPONSE: $response");
+      debugPrint("RESPONSE: $response");
 
-      if (response) {
-        List data = response['data'];
-
-        setState(() {
-          games = data;
-          if (games.isNotEmpty) {
-            activeGameId = games[0]['id'].toString();
-          }
-        });
+      List data = [];
 
 
+      if (response is List) {
+        data = response;
+      } else if (response is Map && response['data'] is List) {
+        data = response['data'];
+      }
 
+      setState(() {
+        games = data;
+        activeGameId =
+        games.isNotEmpty ? games[0]['id'].toString() : null;
+      });
 
-
+      if (activeGameId != null) {
         await fetchLevels();
-      } else {
-        setState(() => loading = false);
       }
     } catch (e) {
       debugPrint("Error fetching games: $e");
-      setState(() => loading = false);
     }
+
+    setState(() => loading = false);
   }
+
+
 
   Future<void> fetchLevels() async {
     if (activeGameId == null) return;
@@ -426,57 +74,61 @@ class _LevelGameSectionState extends State<LevelGameSection> {
         "/levels?levelGameId=$activeGameId",
       );
 
-      final walletRes = await ApiServices.getRequest("/wallet");
+      debugPrint("Levels RESPONSE: $levelsRes");
 
-      debugPrint("LEVELS RESPONSE: $levelsRes");
 
-      if (levelsRes['success'] && walletRes['success']) {
-        setState(() {
-          gameLevels = levelsRes['data'] ?? [];
-          wallet = walletRes['data'] ??
-              {
-                "available": 0,
-                "locked": 0,
-              };
-        });
+      if (levelsRes is List) {
+        gameLevels = levelsRes;
+      } else if (levelsRes is Map && levelsRes['data'] is List) {
+        gameLevels = levelsRes['data'];
+      } else {
+        gameLevels = [];
       }
+
     } catch (e) {
       debugPrint("Error fetching levels: $e");
+      gameLevels = [];
+    }
+
+
+    try {
+      final walletRes = await ApiServices.getRequest("/wallet");
+
+      if (walletRes is Map && walletRes['data'] != null) {
+        wallet = walletRes['data'];
+      }
+    } catch (e) {
+      debugPrint("Wallet failed (ignored): $e");
     }
 
     setState(() => loading = false);
   }
 
+
+
+
   /* ================= LOGIC ================= */
 
   bool isLevelUnlocked(int levelNum, dynamic currentPool) {
-    if (levelNum <= 2) return true;
 
-    Map<String, dynamic>? prevPool;
-
-    try {
-      prevPool = gameLevels.firstWhere(
-            (p) => p['level'] == levelNum - 2,
-      );
-    } catch (e) {
-      prevPool = null;
-    }
-
-    if (prevPool != null && prevPool['status'] == 'completed') {
-      return true;
-    }
-
-    if (currentPool != null && prevPool == null) {
-      return true;
-    }
-
-    return false;
+    if (levelNum == 1) return true;
+    return currentPool != null;
   }
 
   Map<String, dynamic>? getPool(int level) {
     try {
-      return gameLevels.firstWhere((p) => p['level'] == level);
+      for (var p in gameLevels) {
+        debugPrint("Checking UI level $level against API level ${p['level']}");
+      }
+
+      final pool = gameLevels.firstWhere(
+            (p) => int.parse(p['level'].toString()) == level,
+      );
+
+      debugPrint(" MATCH FOUND for level $level -> ${pool['level']}");
+      return pool;
     } catch (e) {
+      debugPrint(" NO MATCH for level $level");
       return null;
     }
   }
@@ -485,155 +137,120 @@ class _LevelGameSectionState extends State<LevelGameSection> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        /// HEADER
-        // Row(
-        //   children: const [
-        //     Icon(Icons.sports_esports, color: Colors.amber, size: 32),
-        //     SizedBox(width: 10),
-        //     Column(
-        //       crossAxisAlignment: CrossAxisAlignment.start,
-        //       children: [
-        //         Text(
-        //           "Level Game",
-        //           style: TextStyle(
-        //               fontSize: 24,
-        //               color: Colors.white,
-        //               fontWeight: FontWeight.bold),
-        //         ),
-        //         Text(
-        //           "Join pools and earn rewards",
-        //           style: TextStyle(color: Colors.grey),
-        //         ),
-        //       ],
-        //     )
-        //   ],
-        // ),
-        //
-        // const SizedBox(height: 20),
-        //
-        // /// WALLET
-        // Container(
-        //   padding: const EdgeInsets.all(12),
-        //   decoration: BoxDecoration(
-        //     color: const Color(0xFF111827),
-        //     borderRadius: BorderRadius.circular(12),
-        //   ),
-        //   child: Row(
-        //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        //     children: [
-        //       Column(
-        //         crossAxisAlignment: CrossAxisAlignment.start,
-        //         children: [
-        //           const Text("Available",
-        //               style: TextStyle(color: Colors.grey, fontSize: 12)),
-        //           Text("₹${wallet['available']}",
-        //               style: const TextStyle(
-        //                   color: Colors.green,
-        //                   fontWeight: FontWeight.bold)),
-        //         ],
-        //       ),
-        //       Column(
-        //         crossAxisAlignment: CrossAxisAlignment.start,
-        //         children: [
-        //           const Text("Locked",
-        //               style: TextStyle(color: Colors.grey, fontSize: 12)),
-        //           Text("₹${wallet['locked']}",
-        //               style: const TextStyle(
-        //                   color: Colors.grey,
-        //                   fontWeight: FontWeight.bold)),
-        //         ],
-        //       ),
-        //       ElevatedButton(
-        //         onPressed: () {},
-        //         style:
-        //         ElevatedButton.styleFrom(backgroundColor: Colors.amber),
-        //         child: const Text("Withdraw",
-        //             style: TextStyle(color: Colors.black)),
-        //       )
-        //     ],
-        //   ),
-        // ),
-        //
-        // const SizedBox(height: 20),
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
 
-        /// DROPDOWN
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12),
-          decoration: BoxDecoration(
-            color: const Color(0xFF111827),
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: DropdownButtonHideUnderline(
-            child: DropdownButton<String>(
-              dropdownColor: const Color(0xFF111827),
-              value: activeGameId,
-              hint: const Text("Select Game",
-                  style: TextStyle(color: Colors.white)),
-              icon:
-              const Icon(Icons.arrow_drop_down, color: Colors.white),
-              items: games.map((game) {
-                return DropdownMenuItem<String>(
-                  value: game['id'].toString(),
-                  child: Text(
-                    game['name'],
-                    style: const TextStyle(color: Colors.white),
-                  ),
-                );
-              }).toList(),
-              onChanged: (value) async {
-                setState(() {
-                  activeGameId = value;
-                });
-                await fetchLevels();
-              },
+          Container(
+            margin: const EdgeInsets.all(12),
+            padding: const EdgeInsets.all(6),
+            decoration: BoxDecoration(
+              color: const Color(0xFF0B1220),
+              borderRadius: BorderRadius.circular(14),
+            ),
+            child: SizedBox(
+              height: 45,
+              child: ListView.separated(
+                scrollDirection: Axis.horizontal,
+                itemCount: games.length,
+                separatorBuilder: (_, __) =>
+                const SizedBox(width: 10),
+                itemBuilder: (context, index) {
+                  final game = games[index];
+                  final isActive =
+                      activeGameId == game['id'].toString();
+
+                  return GestureDetector(
+                    onTap: () async {
+                      setState(() {
+                        activeGameId =
+                            game['id'].toString();
+                      });
+
+                      await fetchLevels();
+                    },
+                    child: AnimatedContainer(
+                      duration:
+                      const Duration(milliseconds: 200),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 18, vertical: 10),
+                      decoration: BoxDecoration(
+                        color: isActive
+                            ? Colors.amber
+                            : const Color(0xFF111827),
+                        borderRadius:
+                        BorderRadius.circular(12),
+                      ),
+                      child: Center(
+                        child: Text(
+                          game['name'],
+                          style: TextStyle(
+                            color: isActive
+                                ? Colors.black
+                                : Colors.white,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
             ),
           ),
-        ),
 
-        const SizedBox(height: 20),
+          const SizedBox(height: 10),
 
-        /// LEVEL GRID
-        loading
-            ? const Center(child: CircularProgressIndicator())
-            : GridView.builder(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          itemCount: 10,
-          gridDelegate:
-          const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            crossAxisSpacing: 12,
-            mainAxisSpacing: 12,
-            childAspectRatio: 0.75,
+
+          loading
+              ? const Center(
+              child: Padding(
+                padding: EdgeInsets.all(20),
+                child: CircularProgressIndicator(),
+              ))
+              : GridView.builder(
+            shrinkWrap: true,
+            physics:
+            const NeverScrollableScrollPhysics(),
+            padding: const EdgeInsets.all(12),
+            itemCount: 10,
+            gridDelegate:
+            const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              crossAxisSpacing: 12,
+              mainAxisSpacing: 12,
+              childAspectRatio: 0.75,
+            ),
+            itemBuilder: (context, index) {
+              final lvlNum = index + 1;
+
+              final pool = getPool(lvlNum);
+              final unlocked =
+              isLevelUnlocked(lvlNum, pool);
+
+              final currentUsers =
+                  pool?['currentUsers'] ?? 0;
+              final requiredUsers =
+                  pool?['requiredUsers'] ??
+                      (lvlNum * 4);
+
+              final entryFee = 100;
+              final reward = entryFee * 2;
+
+              return LevelCard(
+                level: lvlNum,
+                unlocked: unlocked,
+                currentUsers: currentUsers,
+                requiredUsers: requiredUsers,
+                reward: reward,
+                pool: pool,
+                gameId: activeGameId,
+              );
+            },
           ),
-          itemBuilder: (context, index) {
-            final lvlNum = index + 1;
-
-            final pool = getPool(lvlNum);
-            final unlocked =
-            isLevelUnlocked(lvlNum, pool);
-
-            final currentUsers =
-                pool?['currentUsers'] ?? 0;
-            final requiredUsers =
-                pool?['requiredUsers'] ?? (lvlNum * 4);
-
-            final entryFee = 100;
-            final reward = entryFee * 2;
-
-            return LevelCard(
-              level: lvlNum,
-              unlocked: unlocked,
-              currentUsers: currentUsers,
-              requiredUsers: requiredUsers,
-              reward: reward,
-            );
-          },
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
@@ -646,6 +263,8 @@ class LevelCard extends StatelessWidget {
   final int currentUsers;
   final int requiredUsers;
   final int reward;
+  final Map<String, dynamic>? pool;
+  final String? gameId;
 
   const LevelCard({
     super.key,
@@ -654,6 +273,8 @@ class LevelCard extends StatelessWidget {
     required this.currentUsers,
     required this.requiredUsers,
     required this.reward,
+    this.pool,
+    this.gameId
   });
 
   @override
@@ -663,8 +284,9 @@ class LevelCard extends StatelessWidget {
         Container(
           padding: const EdgeInsets.all(14),
           decoration: BoxDecoration(
-            color:
-            unlocked ? const Color(0xFF111827) : Colors.black26,
+            color: unlocked
+                ? const Color(0xFF111827)
+                : Colors.black26,
             borderRadius: BorderRadius.circular(16),
           ),
           child: Column(
@@ -676,8 +298,8 @@ class LevelCard extends StatelessWidget {
                 MainAxisAlignment.spaceBetween,
                 children: [
                   Text("Level $level",
-                      style:
-                      const TextStyle(color: Colors.grey)),
+                      style: const TextStyle(
+                          color: Colors.grey)),
                   Icon(
                     unlocked
                         ? Icons.lock_open
@@ -690,15 +312,29 @@ class LevelCard extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 10),
-              Text("$currentUsers/$requiredUsers",
-                  style: const TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold)),
+              Text(
+                "PROGRESS",
+                style: TextStyle(
+                  color: Color(0x85FFFFFF),
+                  fontSize:8,
+                  fontWeight: FontWeight.bold
+                ),
+              ),
+
+              Text(
+                "$currentUsers/$requiredUsers",
+                style: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold),
+              ),
               const SizedBox(height: 5),
               LinearProgressIndicator(
-                value: currentUsers / requiredUsers,
+                value: requiredUsers == 0
+                    ? 0
+                    : currentUsers / requiredUsers,
                 color: Colors.amber,
-                backgroundColor: Colors.grey.shade800,
+                backgroundColor:
+                Colors.grey.shade800,
               ),
               const SizedBox(height: 10),
               const Text("Reward",
@@ -708,10 +344,45 @@ class LevelCard extends StatelessWidget {
                       color: Colors.amber,
                       fontWeight: FontWeight.bold)),
               const Spacer(),
-              ElevatedButton(
-                onPressed: unlocked ? () {} : null,
-                child: Text(unlocked ? "JOIN" : "LOCKED"),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  ElevatedButton(
+                    onPressed: unlocked
+                        ? () {
+                      final entryFee = 100;
+
+                      final joinId = pool != null
+                          ? pool!['id']
+                          : "placeholder-$gameId-$level";
+
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => WalletScreen(
+                            amount: entryFee,
+                            poolId: joinId,
+                            from: "level-game",
+                          ),
+                        ),
+                      );
+                    }
+                        : null,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Color(0xFFFDFDFD),
+                      padding: EdgeInsets.all(10 )
+                    ),
+                    child:
+                    Text(unlocked ? "JOIN   >" : "LOCKED",
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold
+                    ),
+                    ),
+                  )
+                ],
               )
+
             ],
           ),
         ),
@@ -723,8 +394,8 @@ class LevelCard extends StatelessWidget {
                 borderRadius: BorderRadius.circular(16),
               ),
               child: const Center(
-                child:
-                Icon(Icons.lock, color: Colors.white54),
+                child: Icon(Icons.lock,
+                    color: Colors.white54),
               ),
             ),
           )
