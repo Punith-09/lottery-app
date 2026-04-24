@@ -95,7 +95,7 @@ class _WalletScreenState extends State<WalletScreen> {
     final isLoggedIn = context.read<AuthProvider1>().isLoggedIn;
 
     if (!isLoggedIn) {
-      showLoginRequiredDialog(context); // 🔥 SHOW POPUP
+      showLoginRequiredDialog(context ); // 🔥 SHOW POPUP
       return;
     }
 

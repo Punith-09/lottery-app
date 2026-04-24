@@ -17,16 +17,16 @@ class UserTile extends StatelessWidget {
       child: Row(
         children: [
           CircleAvatar(
-            child: Text(user['name'][0]),
+            child: Text(user['name']!=null ? user['name'][0]:'U'),
           ),
           const SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(user['name'],
-                    style: const TextStyle(fontWeight: FontWeight.bold)),
-                Text("Last: ${user['lastTxn']}"),
+                Text(user['name']?? "Unknown",
+                    style: const TextStyle(fontWeight: FontWeight.bold,fontSize: 16)),
+                Text(user['phone'] ?? "No phone"),
               ],
             ),
           ),

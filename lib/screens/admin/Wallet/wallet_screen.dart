@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:lottery_app/screens/admin/drawer/admin_drawer.dart';
 import 'package:lottery_app/screens/admin/drawer/drawer_menu.dart';
 
+import '../../../services/api_services.dart';
+
 class WalletScreenn extends StatefulWidget {
   const WalletScreenn({super.key});
 
@@ -12,17 +14,19 @@ class WalletScreenn extends StatefulWidget {
 class _WalletScreennState extends State<WalletScreenn> {
   TextEditingController controller = TextEditingController();
 
-  List<Map<String, dynamic>> users = [
-    {"name": "Ravi Kumar", "balance": 4200, "bonus": 500, "locked": 9280, "lastTxn": "1d ago"},
-    {"name": "Priya Sharma", "balance": 1800, "bonus": 200, "locked": 368, "lastTxn": "1d ago"},
-    {"name": "Amit Singh", "balance": 900, "bonus": 100, "locked": 6223, "lastTxn": "2h ago"},
-    {"name": "Sneha Patel", "balance": 8400, "bonus": 1200, "locked": 1351, "lastTxn": "2h ago"},
-    {"name": "Kiran Rao", "balance": 300, "bonus": 0, "locked": 4028, "lastTxn": "2h ago"},
-  ];
+  List<Map<String, dynamic>> users = [];
 
   List<Map<String, dynamic>> filteredResults = [];
 
   bool isMenuOpen = false;
+  bool isLoading = true;
+
+  int totalWallet = 0;
+  int avgBalance = 0;
+  int totalTxns = 0;
+  int lockedAmount = 0;
+
+
 
   @override
   void initState() {
@@ -45,6 +49,44 @@ class _WalletScreennState extends State<WalletScreenn> {
     setState(() {
       filteredResults = results;
     });
+  }
+
+  Future<void> fetchWallets() async{
+    setState(()=>isLoading=true);
+    try{
+      final response = await ApiServices.getRequest("/admin/wallets");
+      print("Api response : $response");
+      setState(() {
+        users = response['users'] ?? [];
+        filteredResults = users;
+
+        totalWallet = response['totalBalance'] ?? 0;
+        lockedAmount = response['totalLocked'] ?? 0;
+        isLoading = false;
+      });
+    }catch (e){
+      setState(() {
+        isLoading = false;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Failed to load wallet")),);
+    }
+  }
+
+  Future<void> adjustBalance(String userId,int amount,String type) async{
+    try{
+      await ApiServices.postRequest("/admin/wallet/adjust", {
+        "userId" : userId,
+        "amount" : amount,
+        "type" : type,
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Wallet updated successfully!")),
+      );
+      fetchWallets();
+    }catch(e){
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Adjustment failed: $e")),
+      );
+    }
   }
 
   Widget buildCard(String title, String value, Color color) {
@@ -115,9 +157,7 @@ class _WalletScreennState extends State<WalletScreenn> {
                   style: const TextStyle(color: Colors.red)),
             ],
           ),
-
           const SizedBox(width: 10),
-
           Column(
             children: [
               IconButton(
