@@ -11,6 +11,7 @@ import 'package:lottery_app/screens/admin/draws/create_draws.dart';
 import 'package:lottery_app/screens/admin/draws/draws_screen.dart';
 import 'package:lottery_app/screens/admin/levelsrewards/levelsrewards_screen.dart';
 import 'package:lottery_app/screens/admin/payments/payments_screen.dart';
+import 'package:lottery_app/screens/admin/users/add_users.dart';
 import 'package:lottery_app/screens/admin/users/users_screen.dart';
 import 'package:lottery_app/screens/auth/login_screen.dart';
 import 'package:lottery_app/screens/auth/signup_screen.dart';
@@ -70,6 +71,7 @@ class MyApp extends StatelessWidget {
           '/categories':(context)=>const CategoriesScreen(),
           '/tickets':(context)=>const TicketsScreen(),
           '/adminWallet':(context)=>const WalletScreenn(),
+          '/addUsers':(context)=>const AddUsers()
         }
     );
   }

@@ -67,7 +67,9 @@ class UserFilterBar extends StatelessWidget {
               const SizedBox(width: 10),
               Expanded(
                 child: ElevatedButton.icon(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/addUsers');
+                  },
                   icon: Icon(Icons.add),
                   label: Text("Add User"),
                   style: ElevatedButton.styleFrom(
