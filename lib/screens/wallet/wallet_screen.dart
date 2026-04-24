@@ -6,7 +6,9 @@ import 'package:lottery_app/screens/wallet/widgets/wallet_features.dart';
 import 'package:provider/provider.dart';
 import 'package:lottery_app/providers/wallet_provider.dart';
 import 'package:lottery_app/services/api_services.dart';
+import '../../providers/auth_provider.dart';
 import '../drawer/app_menu.dart';
+import '../drawer/login_required_dialog.dart';
 
 class WalletScreen extends StatefulWidget {
   final int? amount;
@@ -32,13 +34,24 @@ class _WalletScreenState extends State<WalletScreen> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _fetchWalletBalance();
-    });
+    init();
+  }
+
+  Future<void> init() async {
+    await context.read<AuthProvider1>().checkLogin(); // 🔥 IMPORTANT
+    await _fetchWalletBalance();
   }
 
   Future<void> _fetchWalletBalance() async {
     if (!mounted) return;
+
+    // 🔥 CHECK LOGIN FIRST
+    final isLoggedIn = context.read<AuthProvider1>().isLoggedIn;
+
+    if (!isLoggedIn) {
+      context.read<WalletProvider>().setBalance(0.0);
+      return;
+    }
 
     setState(() => isLoading = true);
 
@@ -58,7 +71,6 @@ class _WalletScreenState extends State<WalletScreen> {
             context.read<WalletProvider>().setBalance(balance);
           }
         } else {
-          // 🔥 Handle backend error properly
           debugPrint("Wallet Error: ${response['message']}");
 
           if (mounted) {
@@ -77,7 +89,16 @@ class _WalletScreenState extends State<WalletScreen> {
     }
   }
 
+
   Future<void> _handleJoinPayment() async {
+    // 🚨 CHECK LOGIN FIRST
+    final isLoggedIn = context.read<AuthProvider1>().isLoggedIn;
+
+    if (!isLoggedIn) {
+      showLoginRequiredDialog(context); // 🔥 SHOW POPUP
+      return;
+    }
+
     if (widget.poolId == null) return;
 
     setState(() => isLoading = true);
@@ -107,6 +128,7 @@ class _WalletScreenState extends State<WalletScreen> {
       setState(() => isLoading = false);
     }
   }
+
 
   void toggleMenu() {
     setState(() {

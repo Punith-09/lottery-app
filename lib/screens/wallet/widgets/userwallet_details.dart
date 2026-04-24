@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:lottery_app/providers/auth_provider.dart';
+import 'package:lottery_app/screens/drawer/login_required_dialog.dart';
 import 'package:lottery_app/services/razorpay_service.dart';
 import 'package:provider/provider.dart';
 import 'package:lottery_app/providers/wallet_provider.dart';
@@ -15,56 +17,44 @@ class UserwalletDetails extends StatefulWidget {
 class _UserwalletDetailsState extends State<UserwalletDetails> {
   final TextEditingController amountController = TextEditingController();
   late RazorpayService razorpayService;
-
   @override
   void initState() {
     super.initState();
-
     razorpayService = RazorpayService();
-
     razorpayService.init(
       onSuccess: _handlePaymentSuccess,
       onFailure: _handlePaymentFailure,
       onExternalWallet: _handleExternalWallet,
     );
   }
-
   // ✅ PAYMENT SUCCESS
   void _handlePaymentSuccess(PaymentSuccessResponse response) {
     final wallet = context.read<WalletProvider>();
-
     double amount = double.tryParse(amountController.text) ?? 0;
-
     wallet.addBalance(amount);
-
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text("Payment Successful ✅")),
     );
   }
-
   // ✅ PAYMENT FAILURE
   void _handlePaymentFailure(PaymentFailureResponse response) {
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text("Payment Failed ❌")),
     );
   }
-
   // ✅ EXTERNAL WALLET
   void _handleExternalWallet(ExternalWalletResponse response) {
     debugPrint("External Wallet: ${response.walletName}");
   }
-
   @override
   void dispose() {
     razorpayService.dispose();
     amountController.dispose();
     super.dispose();
   }
-
   @override
   Widget build(BuildContext context) {
     final wallet = context.watch<WalletProvider>();
-
     return Column(
       children: [
         Container(
@@ -97,7 +87,6 @@ class _UserwalletDetailsState extends State<UserwalletDetails> {
                 ],
               ),
               const SizedBox(height: 10),
-
               // 💰 BALANCE
               Text(
                 "₹${wallet.balance.toStringAsFixed(2)}",
@@ -107,9 +96,7 @@ class _UserwalletDetailsState extends State<UserwalletDetails> {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-
               const SizedBox(height: 15),
-
               Row(
                 children: [
                   Expanded(
@@ -141,7 +128,19 @@ class _UserwalletDetailsState extends State<UserwalletDetails> {
                   const SizedBox(width: 10),
                   Expanded(
                     child: ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        final isLoggedIn = context.read<AuthProvider1>().isLoggedIn;
+
+                        print("ADD FUNDS LOGIN STATUS: $isLoggedIn");
+
+                        if (!isLoggedIn) {
+                          showLoginRequiredDialog(context);
+                          return;
+                        }
+
+                        _showAddMoneyBottomSheet(context);
+                      },
+
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF1C2B26),
                         shape: RoundedRectangleBorder(
@@ -183,6 +182,13 @@ class _UserwalletDetailsState extends State<UserwalletDetails> {
 
 
   void _showAddMoneyBottomSheet(BuildContext context) {
+    final isLoggedIn = context.read<AuthProvider1>().isLoggedIn;
+
+    if (!isLoggedIn) {
+      showLoginRequiredDialog(context);
+      return;
+    }
+
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
