@@ -6,31 +6,25 @@ import 'package:lottery_app/services/api_services.dart';
 import '../drawer/admin_drawer.dart';
 import '../drawer/drawer_menu.dart';
 
+
 class LevelsRewardsScreen extends StatefulWidget {
   const LevelsRewardsScreen({super.key});
-
   @override
   State<LevelsRewardsScreen> createState() => _LevelsScreenState();
 }
-
 class _LevelsScreenState extends State<LevelsRewardsScreen> {
   Map<String,dynamic> stats={};
   bool isMenuOpen = false;
   bool isCreatingGame = false;
   bool isLoadingGames=false;
-
   List<dynamic> games = [];
   List<dynamic> levelGames=[];
-
   String? selectedGameId;
-
   final TextEditingController gameNameController = TextEditingController();
   final TextEditingController entryFeeController = TextEditingController();
-
   final TextEditingController levelController = TextEditingController(text: "1");
   final TextEditingController requiredUsersController = TextEditingController(text: "4");
   final TextEditingController entryFeePoolController = TextEditingController(text: "100");
-
   @override
   void initState(){
     super.initState();
@@ -38,14 +32,11 @@ class _LevelsScreenState extends State<LevelsRewardsScreen> {
     fetchGames();
     fetchLevelPools();
   }
-
-
   void toggleMenu() {
     setState(() {
       isMenuOpen = !isMenuOpen;
     });
   }
-
   Future<void> fetchLevelPools() async {
     try {
       setState(() => isLoadingGames = true);
