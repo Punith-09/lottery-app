@@ -18,7 +18,8 @@ class TranscationModel {
   factory TranscationModel.fromJson(Map<String, dynamic> json) {
     return TranscationModel(
       id: json['id'] ?? '',
-      userName: json['userName'] ?? 'User', // Fixed key name
+      userName: json['userName'] ?? 'User',
+      // Fixed key name
       // ✅ FIX: Convert String amount to double safely
       amount: double.tryParse(json['amount'].toString()) ?? 0.0,
       type: json['type'] ?? '',

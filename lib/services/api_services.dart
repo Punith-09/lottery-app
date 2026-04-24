@@ -42,6 +42,8 @@ class ApiServices {
   // =========================
   static Future<dynamic> getRequest(String endpoint) async {
     final url = Uri.parse("$baseUrl$endpoint");
+    print("GET: $endpoint");
+    print("COOKIE SENT: $cookie");
 
     try {
       final response = await http.get(url, headers: _headers);
@@ -139,7 +141,7 @@ class ApiServices {
   }
 
   // =========================
-  // TRANSACTIONS API
+  // TRANSACTIONS A PI
   // =========================
   static Future<List<TranscationModel>> getTranscations() async {
     final response = await getRequest("/payments/transactions");
@@ -157,3 +159,4 @@ class ApiServices {
     return data.map((e) => TranscationModel.fromJson(e)).toList();
   }
 }
+

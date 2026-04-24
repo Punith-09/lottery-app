@@ -36,14 +36,15 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
   // ✅ FETCH TRANSACTIONS API
   Future<void> fetchTransactions() async {
     try {
+      await ApiServices.loadCookie();
       final response =
-      await ApiServices.getRequest("/payments/transactions");
+      await ApiServices.getRequest("/wallet/transactions");
 
       print("API RESPONSE: $response");
 
       if (response is Map<String, dynamic>) {
         if (response['success'] == true) {
-          final List data = response['data'] ?? [];
+          final List data = response['transactions'] ?? [];
 
           setState(() {
             transactions =
@@ -80,9 +81,6 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
       });
     }
   }
-
-
-  @override
   @override
   Widget build(BuildContext context) {
     return Scaffold(

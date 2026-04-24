@@ -33,6 +33,7 @@ void main() async{
       providers: [
         ChangeNotifierProvider(create: (_) => WalletProvider(),),
         ChangeNotifierProvider(create: (context)=> AuthProvider(),),
+        ChangeNotifierProvider(create: (context)=>AuthProvider1())
         // Add other providers here as your app grows
       ],
       child: const MyApp(),
