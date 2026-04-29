@@ -49,7 +49,9 @@ void showLoginRequiredDialog(BuildContext context){
               style: TextStyle(color: Colors.grey),
             ),
             const SizedBox(height: 20),
-            ElevatedButton(onPressed: (){},
+            ElevatedButton(onPressed: (){
+              Navigator.pushNamed(context, '/login');
+            },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF00D391),
                   minimumSize: const Size(double.infinity,50),
