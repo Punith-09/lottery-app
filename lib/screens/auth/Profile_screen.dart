@@ -16,7 +16,7 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   bool isMenuOpen = false;
   bool isEditing = false;
-
+  final TextEditingController useridController =TextEditingController();
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
@@ -36,7 +36,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
     Future.delayed(Duration.zero, () {
       final auth = Provider.of<AuthProvider>(context, listen: false);
-
+      useridController.text = auth.userid;
       usernameController.text = auth.username;
       emailController.text = auth.email;
       roleValue = auth.role;
@@ -68,6 +68,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         final auth = Provider.of<AuthProvider>(context, listen: false);
 
         auth.login(
+          userid: useridController.text,
           username: usernameController.text,
           email: emailController.text,
           role: roleValue,

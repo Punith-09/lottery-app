@@ -3,6 +3,9 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:lottery_app/core/constants/app_constants.dart';
 import 'package:lottery_app/screens/drawer/app_footer.dart';
 import 'package:lottery_app/screens/drawer/custom_drawer.dart';
+import 'package:lottery_app/screens/drawer/login_required_dialog.dart';
+import 'package:provider/provider.dart';
+import '../../providers/login_provider.dart';
 import '../drawer/app_menu.dart';
 import 'package:lottery_app/services/api_services.dart';
 
@@ -262,6 +265,8 @@ class _GamesScreenState extends State<GamesScreen> {
   }
 
   Widget _buildGameCard(Map<String, dynamic> game) {
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(24),
@@ -364,7 +369,22 @@ class _GamesScreenState extends State<GamesScreen> {
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(
-              onPressed: () {},
+              onPressed: () {
+                if (!authProvider.isLoggedIn) {
+                  showLoginRequiredDialog(context);
+                  // Navigator.pushNamed(context, "/loginDialogue");
+                } else {
+
+                  Navigator.pushNamed(
+                    context,
+                    "/",
+                    // arguments: {
+                    //   "game": game,
+                    //   "userId": authProvider.userid,
+                    // },
+                  );
+                }
+              },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Color(0xFF00FDA2),
                 foregroundColor: Colors.black,

@@ -60,6 +60,7 @@ class _LevelsScreenState extends State<LevelsScreen> {
                       // const RewardCard(),
 
                       const SizedBox(height: 30),
+
                       Row(
                         // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -69,7 +70,13 @@ class _LevelsScreenState extends State<LevelsScreen> {
                             height: 50,
                             color: Color(0xffeeb000),
                           ),
+
+
+
                           const SizedBox(width: 12),
+
+
+
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -94,10 +101,8 @@ class _LevelsScreenState extends State<LevelsScreen> {
                           )
                         ],
                       ),
-                      // const LevelsOverview(),
-                      //
-                      const SizedBox(height: 40),
 
+                      const SizedBox(height: 40),
 
                       const WithdrawDetails(),
 

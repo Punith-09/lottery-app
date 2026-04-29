@@ -7,6 +7,8 @@ import 'package:provider/provider.dart';
 import 'package:lottery_app/providers/wallet_provider.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 
+import '../../../providers/login_provider.dart';
+
 class UserwalletDetails extends StatefulWidget {
   const UserwalletDetails({super.key});
 
@@ -16,6 +18,8 @@ class UserwalletDetails extends StatefulWidget {
 
 class _UserwalletDetailsState extends State<UserwalletDetails> {
   final TextEditingController amountController = TextEditingController();
+  late final authProvider = Provider.of<AuthProvider>(context, listen: false);
+
   late RazorpayService razorpayService;
   @override
   void initState() {
@@ -102,7 +106,11 @@ class _UserwalletDetailsState extends State<UserwalletDetails> {
                   Expanded(
                     child: ElevatedButton(
                       onPressed: () {
-                        _showAddMoneyBottomSheet(context);
+                         if (!authProvider.isLoggedIn) {
+                           showLoginRequiredDialog(context);
+                         }else {
+                           _showAddMoneyBottomSheet(context);
+                         }
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF00BB7C),

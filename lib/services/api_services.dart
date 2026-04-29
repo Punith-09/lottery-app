@@ -4,22 +4,18 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:lottery_app/models/transcation_model.dart';
 
 class ApiServices {
-  // 👉 Base URL
+
   static const String baseUrl = "http://10.0.2.2:10000/api";
 
-  // 🍪 Single global cookie
+
   static String? cookie;
 
-  // 🔹 Headers
   static Map<String, String> get _headers => {
     "Content-Type": "application/json",
     "Accept": "application/json",
     if (cookie != null) "Cookie": cookie!,
   };
 
-  // =========================
-  // 🍪 COOKIE STORAGE
-  // =========================
 
   static Future<void> saveCookie(String cookieValue) async {
     final prefs = await SharedPreferences.getInstance();
@@ -37,9 +33,7 @@ class ApiServices {
     cookie = null;
   }
 
-  // =========================
-  // GET
-  // =========================
+
   static Future<dynamic> getRequest(String endpoint) async {
     final url = Uri.parse("$baseUrl$endpoint");
     print("GET: $endpoint");
@@ -53,9 +47,6 @@ class ApiServices {
     }
   }
 
-  // =========================
-  // POST (LOGIN COOKIE CAPTURE)
-  // =========================
   static Future<dynamic> postRequest(
       String endpoint, Map<String, dynamic> body) async {
     final url = Uri.parse("$baseUrl$endpoint");

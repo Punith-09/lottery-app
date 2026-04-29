@@ -35,7 +35,9 @@ class _LoginScreenState extends State<LoginScreen> {
       final user = response['user'];
       String username = user['name']?? emailController.text;
       final authProvider=Provider.of<AuthProvider>(context,listen: false);
-      authProvider.login(username: username,
+      authProvider.login(
+        userid:user['id'],
+        username: username,
         email: emailController.text,
         role: user['role'],
       );
